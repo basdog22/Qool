@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language shortname="en" author="Vasileios Kerasiotis">
+	<translate value="Save">Save</translate>
+	<translate value="open">Open</translate>
+	<translate value="delete">Delete</translate>
+	<translate value="update">Update</translate>
+	<translate value="new">New</translate>
+	<translate value="content">Content</translate>
+	<translate value="register">Register</translate>
+	<translate value="login">Login</translate>
+</language>

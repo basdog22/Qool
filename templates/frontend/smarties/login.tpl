@@ -1,0 +1,2 @@
+{"Login"|t}
+{$loginForm}

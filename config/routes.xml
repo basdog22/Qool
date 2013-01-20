@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<routes>
+  <Default_Index type="Zend_Controller_Router_Route">
+		<route>/:action</route>
+	  <defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>index</action>
+		</defaults>
+  </Default_Index>
+  <Default_Registration type="Zend_Controller_Router_Route">
+		<route>register/:slug</route>
+		<reqs slug="[a-zA-Z\-0-9]+" />
+		<defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>register</action>
+		</defaults>
+	</Default_Registration>
+  <Default_Read type="Zend_Controller_Router_Route">
+		<route>default/:slug</route>
+		<reqs slug="[a-zA-Z\-0-9]+" />
+		<defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>read</action>
+		</defaults>
+	</Default_Read>
+	<Default_Taxonomy type="Zend_Controller_Router_Route">
+		<route>taxonomy/:type/:tax</route>
+		<reqs type="[a-z]+" />
+		<reqs tax="[a-zA-Z0-9\-\s]+" />
+		<defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>taxonomy</action>
+		</defaults>
+	</Default_Taxonomy>
+	<Default_Search type="Zend_Controller_Router_Route">
+		<route>search/</route>
+		<defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>search</action>
+		</defaults>
+	</Default_Search>
+	<Default_Profiles type="Zend_Controller_Router_Route">
+		<route>profiles/:profile</route>
+		<reqs profile="[a-zA-Z0-9]+" />
+		<defaults>
+			<module>default</module>
+			<controller>profiles</controller>
+			<action>index</action>
+			<profile>me</profile>
+		</defaults>
+	</Default_Profiles>
+	<Default_Update type="Zend_Controller_Router_Route">
+		<route>profiles/update</route>
+		<defaults>
+			<module>default</module>
+			<controller>profiles</controller>
+			<action>update</action>
+		</defaults>
+	</Default_Update>
+	<Default_Feed type="Zend_Controller_Router_Route">
+		<route>feed/:lib/:type</route>
+		<reqs lib="[a-zA-Z]+" />
+		<reqs type="[a-z]+" />
+		<defaults>
+			<module>default</module>
+			<controller>index</controller>
+			<action>feed</action>
+			<type>atom</type>
+		</defaults>
+	</Default_Feed>
+</routes>

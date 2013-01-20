@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<id>smarties</id>
+	<title>Smarties</title>
+	<description>The default Smarty template for Qool CMS. 3 columns template with caching capabilities powered by the Smarty template engine</description>
+	<tags>simple,blog,jquery</tags>
+	<creationDate>2012-09-20</creationDate>
+	<licence>GNU/GPL</licence>
+	<version>1.0.0</version>
+	<engine>smarty</engine>
+	<author>
+		<name>Kerasiotis Vasileios</name>
+		<url>http://www.qool.gr/</url>
+		<template_url>http://www.qool.gr/templates/smarties</template_url>
+	</author>
+	<settings>
+		<item id="css_skin">
+			<name>Theme</name>
+			<type>selectbox</type>
+			<values>
+				<value>blue</value>
+				<value>black</value>
+				<value>orange</value>
+				<value>green</value>
+			</values>
+			<default_value>blue</default_value>
+		</item>
+	</settings>	
+	<slots>
+		<slot title="Box 1" name="top_box1">text</slot>
+		<slot title="Box 2" name="top_box2">text</slot>
+		<slot title="Box 3" name="top_box3">text</slot>
+		<slot title="Box 4" name="top_box4">text</slot>
+		<slot title="Highlight Box" name="highlight">text</slot>
+		<slot title="Footer Box 1" name="footer_1">text</slot>
+		<slot title="Footer Box 2" name="footer_2">text</slot>
+		<slot title="Footer Box 3" name="footer_3">text</slot>
+		<slot title="Footer Box 4" name="footer_4">text</slot>
+	</slots>
+</template>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<!--
+			Halcyonic 2.0 by HTML5 Up!
+			html5up.net | @nodethirtythree
+			Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+		-->
+		<title><< site_title() >></title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<< the_meta() >>
+		<< halcyonic_favicon() >>
+		<< halcyonic_css() >>
+		<< qool_header() >>
+	</head>
+	<body>
+		<!-- Header -->
+			<div id="header-wrapper">
+				<header id="header" class="5grid-layout">
+					<div class="row">
+						<div class="12u">
+						
+							<!-- Logo -->
+								<h1 class="mobileUI-site-name"><a href="<< qoolinfo('home') >>"><< site('frontend_title') >></a></h1>
+							
+							<!-- Nav -->
+								<nav class="mobileUI-site-nav">
+									<% set menuconfig = "array('wrap_menu'=>'nav','wrap_link'=>false" %>
+									<< menu('Main',menuconfig) >>
+									
+								</nav>
+
+						</div>
+					</div>
+				</header>
+			</div>
+
+		<% set istwig = is_nophp_include() %>
+		<% if istwig %>
+			<% include theInclude ~ ".html"%>
+		<% else%>
+			<< load_the_include >>
+		<% endif %>
+		<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer id="footer" class="5grid-layout">
+					<div class="row">
+						<div class="8u">
+						
+							<!-- Links -->
+								<section>
+									<h2>Important Stuff</h2>
+									<div class="5grid">
+										<div class="row">
+											<div class="3u">
+												<< widget('footer_1','h2')>>
+											</div>
+											<div class="3u">
+												<< widget('footer_2','h2')>>
+											</div>
+											<div class="3u">
+												<< widget('footer_3','h2')>>
+											</div>
+											<div class="3u">
+												<< widget('footer_4','h2')>>
+											</div>
+										</div>
+									</div>
+								</section>
+
+						</div>
+						<div class="4u">
+							
+							<!-- Blurb -->
+								<section>
+									<< widget('highlight','h2')>>
+								</section>
+						
+						</div>
+					</div>
+				</footer>
+			</div>
+
+		<!-- Copyright -->
+			<div id="copyright">
+				&copy; Qool CMS. All rights reserved. | Design: <a href="http://html5up.net">HTML5 Up!</a>
+			</div>
+<<qool_footer()>>
+	</body>
+</html>

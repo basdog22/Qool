@@ -1,0 +1,132 @@
+.well2{
+  min-height: 20px;
+  padding: 9px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.well3{
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.drg{
+	cursor:move;
+}
+
+.filelistfull{
+	background:#fff;
+	display:block;
+	min-width:400px;
+	width:400px;
+}
+
+.dropdown-menu a.inline-block{
+	display:inline-block;
+	width:50%;
+}
+
+.popover{
+	z-index:1100;
+}
+
+.span3-half{
+	width:18% !important;
+}
+
+.span9-minushalf{
+	width:79.34% !important;
+}
+
+.row-fluid [class*="tspan"] {
+    margin-left: 1.9% !important;
+}
+
+.row-fluid [class*="dspan"]{
+    margin-left: 0 !important;
+}
+
+.indent1{
+	padding-left:15px;
+}
+.indent2{
+	padding-left:25px;
+}
+.indent3{
+	padding-left:35px;
+}
+.indent4{
+	padding-left:45px;
+}
+.indent5{
+	padding-left:55px;
+}
+.indent6{
+	padding-left:65px;
+}
+
+.minheightwell{
+	height:53px !important;
+}
+
+.boardwidget{
+	border:1px solid #ccc;
+	border-radius:5px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.boardwidget h4{
+	display:block;
+	padding:0 0 0 15px;
+	border-bottom:1px solid #ccc;
+	height:100%;
+	position:relative;
+	color:#fff;
+	line-height:35px;
+	background-image: -moz-linear-gradient(top, #4a4a4a, #3a3a3a);
+  	background-image: -ms-linear-gradient(top, #4a4a4a, #3a3a3a);
+  	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#3a3a3a));
+  	background-image: -webkit-linear-gradient(top, #4a4a4a, #3a3a3a);
+  	background-image: -o-linear-gradient(top, #4a4a4a, #3a3a3a);
+  	background-image: linear-gradient(top, #4a4a4a, #3a3a3a);
+}
+
+.boardwidget .wellin{
+	padding:9px 15px;
+	background-color: #f5f5f5;
+}
+
+.table thead th{
+	font-size:11px !important;
+}
+
+.selectorimage{
+	
+}
+
+.miniheight{
+	height:18px;
+}
+
+.miniheight .btn{
+	padding: 9px 12px;
+}

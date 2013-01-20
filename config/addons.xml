@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addons>
+	<applications>
+		<addon/>
+	</applications>
+	<modules>
+		<addon/>
+	</modules>
+	<widgets>
+		<addon/>
+		<addon parent="none" name="text" state="installed" level="8000" adminlevel="1" cachetime="500" title="Text Widget for Qool CMS"/>
+		<addon parent="none" name="menu" state="installed" level="8000" adminlevel="1" cachetime="500" title="Menu Widget for Qool CMS"/>
+		<addon parent="none" name="feed" state="installed" level="8000" adminlevel="1" cachetime="500" title="Feed Widget for Qool CMS"/>
+	</widgets>
+</addons>

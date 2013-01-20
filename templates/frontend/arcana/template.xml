@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<id>arcana</id>
+	<title>Arcana</title>
+	<description>A beatiful HTML5 template for Qool CMS. Created by HTML5Up with 5grid.</description>
+	<tags>html5,sidebar</tags>
+	<creationDate>2012-09-01</creationDate>
+	<licence>GNU/GPL</licence>
+	<version>1.0.0</version>
+	<engine>php</engine>
+	<author>
+		<name>Vasileios Kerasiotis</name>
+		<url>http://www.qool.gr/</url>
+		<template_url>http://www.qool.gr/templates/arcana</template_url>
+	</author>
+	<settings>
+		<item id="use_jscss">
+			<name>Use JS Loader</name>
+			<type>selectbox</type>
+			<values>
+				<value>Yes</value>
+				<value>No</value>
+			</values>
+			<default_value>Yes</default_value>
+		</item>
+		<item id="favicon">
+			<name>Favicon</name>
+			<type>textinput</type>
+			<default_value>images/favicon.ico</default_value>
+		</item>
+	</settings>	
+	<slots>
+		<slot title="Box 1" name="top_box1">text</slot>
+		<slot title="Box 2" name="top_box2">text</slot>
+		<slot title="Box 3" name="top_box3">text</slot>
+		<slot title="Box 4" name="top_box4">text</slot>
+		<slot title="Highlight Box" name="highlight">text</slot>
+		<slot title="Footer Box 1" name="footer_1">text</slot>
+		<slot title="Footer Box 2" name="footer_2">text</slot>
+		<slot title="Footer Box 3" name="footer_3">text</slot>
+		<slot title="Footer Box 4" name="footer_4">text</slot>
+		<slot title="Left Sidebar Box 1" name="left_box1">menu</slot>
+	</slots>
+	<css>
+		<file>/css/5grid/core.css</file>
+		<file>/css/5grid/core-desktop.css</file>
+		<file>/css/5grid/core-1200px.css</file>
+		<file>/css/5grid/core-noscript.css</file>
+		<file>/css/style.css</file>
+		<file>/css/style-desktop.css</file>
+	</css>
+	<js>
+		<file>/css/5grid/jquery.js</file>
+	</js>
+</template>

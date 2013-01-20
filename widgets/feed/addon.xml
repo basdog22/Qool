@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon>
+	<id>menu</id>
+	<name>Feed Widget for Qool CMS</name>
+	<version>1.0</version>
+	<description>The default feed widget for the Qool CMS</description>
+	<tags>feeds,system,qool</tags>
+	<creationDate>2008-05-01</creationDate>
+	<licence>GNU/GPL</licence>
+	<author>
+		<name>Kerasiotis Vasileios</name>
+		<url>http://www.qoolsoft.gr</url>
+		<addon_url>http://www.qoolsoft.gr/menu_widget</addon_url>
+	</author>
+	<actions>
+		<backend>
+			<hooks>
+			</hooks>
+		</backend>
+	</actions>
+</addon>

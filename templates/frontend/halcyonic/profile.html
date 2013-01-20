@@ -1,0 +1,30 @@
+<div id="content-wrapper">
+	<div id="content">
+		<div class="5grid-layout">
+			<div class="row">
+				<div class="6u mobileUI-main-content">
+				<section>
+				<% set user = get_array('user')%>
+					<h3><< user.username>></h3>
+					<dl>
+					
+					<% for key,data in user.data %>
+					<dt><< key >></dt>
+					<dd><< data >></dd>
+					<% endfor %>
+					</dl>
+					</section>
+				</div>
+				<% if isactive('formTitle') %>
+				<div class="6u">
+				<section>
+					<% autoescape false %>
+					<< theForm >>
+					<% endautoescape %>
+				</section>
+				</div>
+				<% endif %>
+			</div>
+		</div>
+	</div>
+</div>

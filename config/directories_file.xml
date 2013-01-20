@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<directories>
+	<structure>
+		<addons chmod="0777">addons</addons>
+		<cache chmod="0777">cache</cache>
+		<controllers chmod="0644">controllers</controllers>
+		<indexes chmod="0644">indexes</indexes>
+		<install chmod="0644" remove="true">install</install>
+		<languages chmod="0644">languages</languages>
+		<lib chmod="0644">lib</lib>
+		<templates chmod="0644">templates</templates>
+		<uploads chmod="0644">uploads</uploads>
+		<modules chmod="0777">modules</modules>
+		<widgets chmod="0777">widgets</widgets>
+	</structure>
+	<special>
+		<folder>/Qoolv2</folder>
+	</special>
+</directories>

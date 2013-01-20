@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<routes>
+<Admin_Index type="Zend_Controller_Router_Route">
+		<route>admin/:action</route>
+		<defaults>
+			<module>admin</module>
+			<controller>index</controller>
+			<action>index</action>
+		</defaults>
+ </Admin_Index>
+ </routes>

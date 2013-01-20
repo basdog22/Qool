@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database>
+	<tables>
+		<table>
+			<name>content_types</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<title type="varchar" length="150" collation="utf8_unicode_ci" null="" index="" ai="" />
+				<mime type="varchar" length="20" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<lib type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<headers type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>data</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<group_id type="int" length="11" collation="" null="" index="index" ai=""/>
+				<is_taxonomy type="tinyint" length="1" collation="" null="" index="" ai=""/>
+				<name type="varchar" length="250" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<value type="text" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<use_pool type="varchar" length="100" collation="utf8_unicode_ci" null="" index="" ai="" />
+				<pool_type type="varchar" length="100" collation="utf8_unicode_ci" null="" index="" ai="" />
+				<order type="int" length="3" collation="" null="" index="index" ai="" />
+			</fields>
+		</table>
+		<table>
+			<name>general_data</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<data_type type="varchar" length="50" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<data_value type="longtext" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>menus</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<title type="varchar" length="100" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<taxonomy type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>menu_items</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<menu_id type="int" length="11" collation="" null="" index="index" ai=""/>
+				<is_special type="tinyint" length="1" collation="" null="" index="" ai=""/>
+				<special type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<special_object type="int" length="11" collation="" null="" index="" ai=""/>
+				<title type="varchar" length="250" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<link type="varchar" length="250" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<objectlink type="int" length="11" collation="" null="" index="index" ai=""/>
+				<link_title type="varchar" length="250" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<link_target type="tinyint" length="1" collation="" null="" index="" ai=""/>
+				<content type="text" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<parent type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>objects</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<slug type="varchar" length="150" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<datestr type="int" length="10" collation="" null="" index="index" ai=""/>
+				<type_id type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>object_data</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<object_id type="int" length="11" collation="" null="" index="index" ai=""/>
+				<name type="varchar" length="250" collation="utf8_unicode_ci" null="index" index="" ai=""/>
+				<value type="text" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>object_to_taxonomy</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<object_id type="int" length="11" collation="" null="" index="index" ai=""/>
+				<taxonomy_id type="int" length="11" collation="" null="" index="index" ai=""/>
+				<data_id type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>taxonomies</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<title type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<taxonomy_type type="varchar" length="150" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<parent type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>taxonomy_types</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<title type="varchar" length="50" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>users</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<username type="varchar" length="50" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<password type="varchar" length="32" collation="utf8_unicode_ci" null="" index="index" ai=""/>
+				<email type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>user_data</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<uid type="int" length="11" collation="" null="" index="index" ai=""/>
+				<name type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<value type="text" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>user_groups</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<title type="varchar" length="100" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<level type="int" length="4" collation="" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>user_profile_fields</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<name type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<field_type type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<default_value type="varchar" length="200" collation="utf8_unicode_ci" null="" index="" ai=""/>
+			</fields>
+		</table>
+		<table>
+			<name>user_to_groups</name>
+			<fields>
+				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
+				<uid type="int" length="11" collation="" null="" index="index" ai=""/>
+				<gid type="int" length="11" collation="" null="" index="" ai=""/>
+			</fields>
+		</table>
+	</tables>
+</database>

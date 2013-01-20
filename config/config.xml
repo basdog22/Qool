@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<host>
+		<http/>
+		<subdomain/>
+		<domain/>
+		<folder/>
+		<separator>/</separator>
+		<absolute_path/>
+	</host>
+	<database>
+		<type/>
+		<host/>
+		<username/>
+		<password/>
+		<db/>
+		<prefix/>
+	</database>
+	<site>
+		<backend_title>Qool v2.0</backend_title>
+		<frontend_title>Modules.gr</frontend_title>
+		<description>Qool CMS is the next generation of content management</description>
+		<slogan>and i am proud!</slogan>
+		<feed_copyright>This feed is powered by Qool CMS</feed_copyright>
+		<feed_generator>Qool CMS v2.0</feed_generator>
+		<feed_author_name>Qool CMS v2.0</feed_author_name>
+		<feed_author_email>admin@localhost</feed_author_email>
+		<feed_logo_image>http://www.qoolsoft.gr/feed_logo.png</feed_logo_image>
+		<captcha_adapter>Figlet</captcha_adapter>
+		<recaptcha_pub/>
+		<recaptcha_priv/>
+		<help>on</help>
+		<default>default</default>
+	</site>
+	<cache>
+		<rules>
+			<overallcache time="300"/>
+			<cacheuser>1</cacheuser>
+			<cacheadmin>1</cacheadmin>
+		</rules>
+	</cache>
+	<template>
+		<frontend>
+			<title>arcana</title>
+			<engine>php</engine>
+			<available>
+				<template/>
+				<template>
+					<title>arcana</title>
+					<engine>php</engine>
+				</template>
+				<template>
+					<title>savant</title>
+					<engine>savant</engine>
+				</template>
+				<template>
+					<title>smarties</title>
+					<engine>smarty</engine>
+				</template>
+				<template>
+					<title>halcyonic</title>
+					<engine>twig</engine>
+				</template>
+			</available>
+		</frontend>
+		<backend>
+			<title>default</title>
+			<engine>php</engine>
+		</backend>
+		<mobile>
+			<title>default</title>
+			<engine>php</engine>
+		</mobile>
+	</template>
+	<languages>
+		<frontend>
+			<language>english</language>
+			<shortname>en</shortname>
+			<available>
+				<language>english</language>
+				<language>greek</language>
+			</available>
+		</frontend>
+		<backend>
+			<language>english</language>
+			<shortname>en</shortname>
+			<available>
+				<language>english</language>
+				<language>greek</language>
+			</available>
+		</backend>
+	</languages>
+	<thirdparty>
+		<template_engines>
+			<php dir="php" extension="php" assigner="php.php"/>
+			<smarty dir="smarty" extension="tpl" assigner="smarty.php"/>
+			<twig dir="twig" extension="html" assigner="twig.php"/>
+			<twig dir="savant" extension="php" assigner="savant.php"/>
+			<twig dir="Wordpress" extension="php" assigner="wordpress.php"/>
+		</template_engines>
+	</thirdparty>
+	<qool>
+		<codename>Sommige</codename>
+		<version>2.0</version>
+		<versioncheck>http://www.qool.gr/api/getversion</versioncheck>
+		<newsfeed>http://www.qool.gr/feed/default</newsfeed>
+	</qool>
+</config>
