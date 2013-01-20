@@ -4,8 +4,7 @@ Qool
 Welcome to Qool CMS. A content management system born from the need to create and manage your content easier than ever.
 We have been working hard to create a CMS that will be able to do anything the user wants. There are virtually no limits on what you can accomplish with Qool CMS. Other content management systems are article based platforms and need addons and extensions to add extra functionality. This is not the case with Qool. 
 
-INSTALLATION
-====
+
 INSTALLATION
 ===============
 
