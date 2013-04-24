@@ -15,10 +15,19 @@ class Admin_IndexController extends Qool_Backend_Action{
 
 
 	function preDispatch(){
+		if ($this->_request->isPost()) {
+			$data = $this->_request->getParams();
+			if($data['csrf']!=$_SESSION['Zend_Form_Element_Hash_salt_csrf']['hash']){
+				echo "CSRF Forbidden";
+				exit;
+			}
+		}
+		
 		$this->requirePriviledges();
 		if($this->config->site->help=='on'){
 			$this->getHelpDialogs();
 		}
+		
 		/*
 		if(Zend_Registry::get('tplOverride')=='login'){
 		$this->_forward('login','index','default');
@@ -304,15 +313,25 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('theList',$langs);
 	}
 
+	function addCSRF($form){
+		$form->addElement('hash', 'csrf', array(
+            'ignore' => true,
+        ));
+        return $form;
+	}
+
 	public function uploadlangAction(){
 		$this->addToBreadcrumb(array('languagelist',$this->t('Languages')));
 		$this->addToBreadcrumb(array('uploadlang',$this->t('Upload Language'),$data['id']));
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Languages');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
+		
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
+		
 		$form->setAction($this->config->host->folder.'/admin/uploadlangfile')->setMethod('post');
 		$upload = new Zend_Form_Element_File('langzip');
 		$upload->setLabel($this->t("Choose a language file in .zip format"));
@@ -330,6 +349,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function uploadlangfileAction(){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -489,6 +509,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Upload new Addon');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -512,6 +533,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Upload new Module');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -535,6 +557,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Upload new Widget');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -771,6 +794,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$autotranslate = buildLanguage($autotranslate,array());
 		$lang = array_merge($autotranslate,$lang);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		//$form->removeDecorator('dl');
@@ -989,6 +1013,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('theInclude','form');
 		Zend_Registry::set('module','Add Data Field');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1036,6 +1061,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$field = $this->getDataField($data['id']);
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1072,6 +1098,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->addToBreadcrumb(array('contentlist',$this->t('Content Type List')));
 		$this->addToBreadcrumb(array('newtype',$this->t('Add Content Type')));
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1104,6 +1131,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 		$type = $this->getContentType($data['id']);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1168,6 +1196,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	function uploadGeneral($action,$id=false){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -1208,6 +1237,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$sql = "SELECT * FROM $d WHERE `group_id`=".(int)$data['type_id']." ORDER BY `order` ASC";
 		$sel = $this->selectAll($sql);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1298,6 +1328,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$sel = $this->selectAll($sql);
 		$sel = $this->doQoolHook('post_getdatafields',$sel);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form-horizontal');
 		$form->removeDecorator('dl');
@@ -1337,6 +1368,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function buildLoginForm(){
 		try {
 			$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 			$form->setView($this->tpl);
 			$form->setAttrib('class', 'form-inline');
 			$form->removeDecorator('dl');
@@ -1370,6 +1402,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function uploadaddonfileAction(){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -1501,6 +1534,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function uploadmodulefileAction(){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -1579,6 +1613,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function uploadwidgetfileAction(){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -1644,6 +1679,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.$dirs['structure']['addons'].DIR_SEP.$data['id'].DIR_SEP."addon.xml");
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1708,6 +1744,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.$dirs['structure']['modules'].DIR_SEP.$data['id'].DIR_SEP."addon.xml");
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1773,6 +1810,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.$dirs['structure']['widgets'].DIR_SEP.$data['id'].DIR_SEP."addon.xml");
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1839,6 +1877,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.'config/addons.xml');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1929,6 +1968,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.'config/addons.xml');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -1982,6 +2022,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.'config/addons.xml');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2035,6 +2076,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$xml = readLangFile(APPL_PATH.'config/config.xml');
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2081,6 +2123,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		Zend_Registry::set('module','Database Settings');
 		$xml = readLangFile(APPL_PATH.'config/config.xml');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2132,6 +2175,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$xml = readLangFile(APPL_PATH.'config/config.xml');
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2200,6 +2244,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$xml = readLangFile(APPL_PATH.'config/config.xml');
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2309,6 +2354,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$dirs = $this->dirs;
 		$xml = readLangFile(APPL_PATH.$dirs['structure']['templates'].DIR_SEP."frontend".DIR_SEP.$data['id'].DIR_SEP."template.xml");
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2411,6 +2457,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('syntax',pathinfo($data['id'], PATHINFO_EXTENSION));
 		//build the form
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2470,6 +2517,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Upload new Theme');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2490,6 +2538,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function uploadthemefileAction(){
 		$dirs = $this->dirs;
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		if ($this->_request->isPost()) {
 			$formData = $this->_request->getPost();
@@ -2635,6 +2684,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New Taxonomy');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2679,6 +2729,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New Taxonomy Type');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2751,6 +2802,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 		$taxonomy = $this->getTaxonomy($data['id']);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2825,6 +2877,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$u = $this->selectRow($sql);
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2855,6 +2908,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New User');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2902,7 +2956,9 @@ class Admin_IndexController extends Qool_Backend_Action{
 
 	public function adduserAction(){
 		if ($this->_request->isPost()) {
+			
 			$data = $this->_request->getParams();
+			
 			$data = $this->cleanPost($data);
 			$t = $this->getDbTables();
 			//create the user
@@ -2960,6 +3016,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New Menu');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -2987,6 +3044,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','general');
 		Zend_Registry::set('module','Edit Menu');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3019,6 +3077,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New Menu Item');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3056,6 +3115,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','Edit Menu Item');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3231,6 +3291,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			}
 		}else{
 			$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 			$form->setView($this->tpl);
 			$form->setAttrib('class', 'form');
 			$form->removeDecorator('dl');
@@ -3280,6 +3341,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->totpl('theInclude','form');
 		Zend_Registry::set('module','New User Group');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3389,6 +3451,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('theInclude','form');
 		Zend_Registry::set('module','Add User Profile Field');
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3441,6 +3504,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$u = $this->getUserField($data['id']);
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3472,6 +3536,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3505,6 +3570,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3671,6 +3737,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 		$widget = $this->getTextWidgetContents($data['textid']);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3699,6 +3766,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 		$widget = $this->getTextWidgetContents($data['textid']);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3727,6 +3795,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 		$widget = $this->getTextWidgetContents($data['textid']);
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
@@ -3779,6 +3848,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$data = $this->_request->getParams();
 
 		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
