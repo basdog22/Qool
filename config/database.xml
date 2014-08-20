@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database>
+    <tables>
+        <audit_archive>audit_archive</audit_archive>
+        <audit_current>audit_current</audit_current>
+        <content_types>content_types</content_types>
+        <data>data</data>
+        <general_data>general_data</general_data>
+        <menus>menus</menus>
+        <menu_items>menu_items</menu_items>
+        <objects>objects</objects>
+        <object_data>object_data</object_data>
+        <object_to_taxonomy>object_to_taxonomy</object_to_taxonomy>
+        <taxonomies>taxonomies</taxonomies>
+        <taxonomy_types>taxonomy_types</taxonomy_types>
+        <users>users</users>
+        <user_data>user_data</user_data>
+        <user_groups>user_groups</user_groups>
+        <user_profile_fields>user_profile_fields</user_profile_fields>
+        <user_to_groups>user_to_groups</user_to_groups>
+    </tables>
+<prefix>qool_</prefix>
+</database>

@@ -56,6 +56,7 @@
                     },
                     getFileCallback : function(url) {
                         path = url;
+                     	
                         path = path.replace("lib/php/","");
                         path = path.replace("../../","");
                         FileBrowserDialogue.mySubmit(path);

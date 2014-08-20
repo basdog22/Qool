@@ -1,4 +1,1 @@
-<filesMatch ".(gif|jpe?g|png|js|css)$">
-    Order Allow,Deny
-    Allow from all
-</filesMatch>
+deny from all

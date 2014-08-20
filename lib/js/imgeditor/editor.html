@@ -1,0 +1,50 @@
+<script type='text/javascript' src='../lib/js/imgeditor/canvas.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/text.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/sharp.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/saver.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/blur.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/threshold.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/sepia.js'></script>
+<script type='text/javascript' src='../lib/js/imgeditor/lib/grayscale.js'></script>
+<style>
+#canvas{
+	height:560px;
+	margin:0 auto;
+}
+#editormenu{
+	float:left;
+	width:850px;
+}
+#editormenu button.btn {
+    float: left;
+}
+#editormenu .btn-group {
+    float: right;
+}
+
+#editormenu .btn-group li {
+    float: left;
+    margin-left: 13px;
+}
+</style>
+<div id='canvas'></div>
+<div id="editormenu">
+	
+</div>
+<script type='text/javascript'>
+
+// loads the canvas
+var editor = new picEditor(<?php echo $image_info[0]?>,<?php echo $image_info[1]?>,'canvas');
+editor.loadImage(editor,'<?php echo $img?>');
+var menu = new picEditMenu(editor,'editormenu');
+
+menu.sepia();
+menu.grayscale();
+menu.text();
+menu.threshold();
+menu.sharp();
+menu.blur();
+menu.saver();
+
+
+</script>

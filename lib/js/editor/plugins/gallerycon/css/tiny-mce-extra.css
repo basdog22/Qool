@@ -1,0 +1,21 @@
+IMG.left {
+	float: left;
+	margin-right: 0.4em;
+}
+IMG.right {
+	float: right;
+	margin-left: 0.4em;
+}
+IMG.baseline {
+	vertical-align: baseline;
+	margin-right: 0.4em;
+}
+IMG.top {
+	vertical-align: top;
+	margin-right: 0.4em;
+}
+IMG.middle {
+	vertical-align: middle;
+	margin-right: 0.4em;
+}
+

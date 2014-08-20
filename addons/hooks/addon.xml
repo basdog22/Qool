@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon>
+	<id>hooks</id>
+	<name>Hooks</name>
+	<version>1.0</version>
+	<description>Hooks documentation</description>
+	<tags>documentation,qool</tags>
+	<creationDate>2012-11-01</creationDate>
+	<licence>GNU/GPL</licence>
+	<author>
+		<name>Kerasiotis Vasileios</name>
+		<url>http://www.qoolsoft.gr</url>
+		<addon_url>http://www.qoolsoft.gr/addons/hooks</addon_url>
+	</author>
+	<actions>
+		<backend>
+			<creation>
+				<blog_post>New Documentation</blog_post>
+			</creation>
+			<general>
+				<blog_help>Help</blog_help>
+			</general>
+			<hooks>
+				<hook>
+					<name>post_libraries_assign</name>
+					<function>loadLibrary</function>
+				</hook>
+			</hooks>
+		</backend>
+	</actions>
+	<templates>
+		<css>
+			<file>/css/style.css</file>
+		</css>
+		<js>
+			<file>/js/blog.js</file>
+		</js>
+		<tpls>
+			<file>/view.php</file>
+			<file>/list.php</file>
+		</tpls>
+		<slots>
+			<slot title="Box 1" name="top_box1">text</slot>
+		</slots>
+	</templates>
+	<content>
+		<title>Hooks Documentation</title>
+		<mime>text/html</mime>
+		<lib>hooks</lib>
+		<headers>text/html</headers>
+		<data>
+			<item>
+				<is_taxonomy>0</is_taxonomy>
+				<name>title</name>
+				<value>textinput</value>
+				<use_pool>0</use_pool>
+				<pool_type>0</pool_type>
+				<order>1</order>
+			</item>
+			<item>
+				<is_taxonomy>0</is_taxonomy>
+				<name>content</name>
+				<value>editor</value>
+				<use_pool>0</use_pool>
+				<pool_type>0</pool_type>
+				<order>4</order>
+			</item>
+			<item>
+				<is_taxonomy>0</is_taxonomy>
+				<name>slug</name>
+				<value>textinput</value>
+				<use_pool>0</use_pool>
+				<pool_type>0</pool_type>
+				<order>2</order>
+			</item>
+		</data>
+	</content>
+	<on_install>hooks_install</on_install>
+</addon>

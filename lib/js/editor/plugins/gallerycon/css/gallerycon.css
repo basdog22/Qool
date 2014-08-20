@@ -1,0 +1,187 @@
+.mceActionPanel {
+	margin-top: 7px;
+}
+.panel_wrapper {
+	border-width: 0px;
+	padding: 0px;
+}
+.panel_wrapper div.current {
+	height: auto;
+}
+body, .tabs a, input, select, textarea {
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Lucida, Verdana, Arial, Helvetica, sans-serif;
+}
+#image-browser {
+	border: 1px solid #ddd;
+}
+#image-browser #ib-galleries-box {
+	float: left;
+	width: 12em;
+	height: 400px;
+	/*overflow-y: auto;*/
+	overflow: display;
+	background-color: #efefef;
+	border-right: 1px solid #ddd;
+}
+#image-browser #ib-galleries {
+	float: left;
+	width: 12em;
+	overflow: visible;
+}
+#image-browser #ib-galleries .gc-gallery {
+	width: 11.6em;
+	overflow: hidden;
+	padding: 0.2em;
+	border-bottom: 1px solid #ddd;
+	background-color: #efefef;
+}
+#image-browser #ib-galleries .gc-gallery:hover,
+#image-browser #ib-galleries .ib-selected {
+	color: black;
+	background-color: orange;
+	cursor: pointer;
+}
+#image-browser #ib-galleries .gc-gallery:hover {
+	background-color: #FFC550;
+}
+#image-browser #ib-galleries .ib-selected,
+#image-browser #ib-galleries .ib-selected:hover {
+	overflow: visible;
+	background-color: white;
+	cursor: default;
+	width: 11.7em;
+	z-index: 1;
+}
+#image-browser #ib-images {
+	height: 400px;
+	overflow: auto;
+	background-color: white;
+ }
+#image-browser .ib-img-box {
+	height: 96px;
+	width: 128px;
+	margin: 4px;
+	text-align: center;
+	/*background-color: #ddd;*/
+	/*padding: 1px;*/
+	overflow: hidden;
+}
+#image-browser .ib-img-box IMG {
+	height: 96px;
+	/*max-width: 128px;*/
+}
+#image-browser .ib-thumb-box {
+	float: left;
+	border: 1px solid #ddd;
+	margin-left: 6px;
+	margin-top: 6px;
+	height: 136px;
+	width: 136px;
+	cursor: pointer;
+	background-color: white;
+}
+#image-browser .ib-thumb-box:hover {
+	background-color: #FFC550;
+	border-color: orange;
+}
+#image-browser .ib-title-box {
+	padding: 2px;
+	overflow: hidden;
+	width: 124px;
+	margin: 2px;
+	text-align: center;
+}
+
+#look_panel {
+}
+#image-look {
+	height: 390px;
+	padding: 10px;
+	border: 1px solid #ddd;
+}
+#image-look h3 {
+	margin-bottom: 0.4em;
+	padding-top: 0.6em;
+}
+#image-look #il-thumb {
+	float: left;
+	margin-right: 1em;
+	height: 128px;
+	width: 128px;
+	padding: 6px;
+	border: 1px solid #ddd;
+	text-align: center;
+}
+#image-look #il-alignment {
+	clear: both;
+}
+#image-look .il-align-type {
+	font-size: 7px;
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	border: 1px solid #ddd;
+	padding: 3px;
+	float: left;
+	margin-right: 1em;
+}
+#image-look .il-align-type:hover {
+	background-color: #FFC550;
+	border-color: orange;
+	cursor: pointer;
+}
+#image-look .il-at-selected,
+#image-look .il-at-selected:hover {
+	background-color: white;
+	border-color: #FFC550;
+	cursor: default;
+}
+#image-look .il-align-type IMG {
+	width: 20px;
+}
+#image-look #il-size {
+	clear: both;
+}
+#image-look #il-size LABEL {
+	display: block;
+	float: left;
+	clear: both;
+}
+#image-look #il-alignment-left IMG {
+	float: left;
+	margin-right: 3px;
+}
+#image-look #il-alignment-right IMG {
+	float: right;
+	margin-left: 3px;
+}
+#image-look #il-alignment-baseline IMG {
+	vertical-align: baseline;
+	margin-right: 3px;
+}
+#image-look #il-alignment-top IMG {
+	vertical-align: top;
+	margin-right: 3px;
+}
+#image-look #il-alignment-middle IMG {
+	vertical-align: middle;
+	margin-right: 3px;
+}
+.backbutton {
+	float: left;
+	clear: both;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.backbutton a {
+	text-decoration: none;
+}
+.backbutton a:hover {
+	color: orange;
+	text-decoration: underline;
+}
+
+.selected{
+	border:1px solid #444!important;
+	background-color:#D24413!important;
+}

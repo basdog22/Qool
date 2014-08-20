@@ -1,4 +1,4 @@
-<div id="qoolbar" class="navbar navbar-fixed-<?php echo $position?>">
+<div id="qoolbar" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -18,7 +18,7 @@
               <li><a href="<?php qoolinfo('home')?>/logout"><?php t('Logout')?></a></li>
             </ul>
           </div>
-          <?php if(count(get_array('addonCreationActions'))>0):?>
+         <?php if(count(get_array('addonCreationActions'))>0):?>
           <div class="btn-group pull-left">
             <a class="btn dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-plus"></i> <?php t("New")?>

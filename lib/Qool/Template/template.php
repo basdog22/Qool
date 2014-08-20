@@ -10,6 +10,16 @@ function qoolinfo($value,$echo=true){
 	}
 }
 
+
+function qoolconfig($domain,$value,$echo=true){
+	$config = Zend_Registry::get('config');
+	if($echo){
+		echo $config->$domain->$value;
+	}else{
+		return $config->$domain->$value;
+	}
+}
+
 function site($value,$echo=true){
 	$config = Zend_Registry::get('config');
 	if($echo){

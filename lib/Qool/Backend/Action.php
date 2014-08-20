@@ -1,50 +1,163 @@
 <?php
 class Qool_Backend_Action extends Zend_Controller_Action{
 
+	/**
+	 * The Qool CMS config object
+	 *
+	 * @var object
+	 */
 	var $config = array();
+	/**
+	 * Existing applications
+	 *
+	 * @var array
+	 */
 	var $applications = array();
+	/**
+	 * Existing modules
+	 *
+	 * @var array
+	 */
 	var $modules = array();
+	/**
+	 * Existing widgets
+	 *
+	 * @var array
+	 */
 	var $widgets = array();
+	/**
+	 * The addons
+	 *
+	 * @var object
+	 */
 	var $addons = array();
+	/**
+	 * The language array
+	 *
+	 * @var array
+	 */
 	var $language = array();
+	/**
+	 * The database object
+	 *
+	 * @var object
+	 */
 	var $db = array();
-	//the cache switch
+
+	/**
+	 * the cache switch
+	 *
+	 * @var boolean
+	 */
 	var $hasCache = true;
-	//the cache object
+
+	/**
+	 * the cache object
+	 *
+	 * @var object
+	 */
 	var $cache = array();
-	//the controller prefix. We need this for cache and more
+
+	/**
+	 * the controller prefix. We need this for cache and more
+	 *
+	 * @var string
+	 */
 	var $prefix = 'Qool_Backend_';
-	//the controllers array. Just a quick hack
+	/**
+	 * the controllers array. Just a quick hack
+	 *
+	 * @var array
+	 */
 	var $controllers = array();
-	//the directory structure
+	/**
+	 * the directory structure
+	 *
+	 * @var array
+	 */
 	var $dirs = array();
-	//our template engine
+
+	/**
+	 * our template engine
+	 *
+	 * @var string
+	 */
 	var $tplEngine = 'php';
-	//the current template
+
+	/**
+	 * the current template
+	 *
+	 * @var string
+	 */
 	var $theme = 'default';
-	//the template data
+
+	/**
+	 * the template data
+	 *
+	 * @var array
+	 */
 	var $tpl = array();
-	//have editor buttons loaded yet?
+
+	/**
+	 * have editor buttons loaded yet?
+	 *
+	 * @var boolean
+	 */
 	var $editorBtnsLoaded = false;
-	//the hooks array
+
+	/**
+	 * the hooks array
+	 *
+	 * @var array
+	 */
 	var $hooks = array();
-	//the current page
+	/**
+	 * the current page
+	 *
+	 * @var int
+	 */
 	var $curPage = 0;
 
-	//the breadcrumbs array
+	/**
+	 * the breadcrumbs array
+	 *
+	 * @var array
+	 */
 	var $breadcrumbs = array();
 
-	//the pager
+
+	/**
+	 * The pager array
+	 *
+	 * @var array
+	 */
 	var $pager = array();
 
+	/**
+	 * The module level
+	 *
+	 * @var int
+	 */
 	var $level;
 
-	//the content types the module can handle
+	/**
+	 * the content types the module can handle
+	 *
+	 * @var array
+	 */
 	var $can_handle = array();
 
-	//the current addon settings
+	/**
+	 * the current addon settings
+	 *
+	 * @var array
+	 */
 	var $addonSettings = array();
 
+	/**
+	 * Initialize the Qool Backend
+	 *
+	 */
 	public function init(){
 		Zend_Registry::set('Qool_Module','backend');
 		Zend_Registry::set('tplOverride','default');
@@ -105,6 +218,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Loads and registeres each addon settings
+	 *
+	 * @param object $addon
+	 */
 	function loadAddonSettings($addon){
 		$dirs = $this->dirs;
 		$settings = array();
@@ -124,26 +242,47 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->addonSettings = $settings;
 	}
 
+	/**
+	 * get all content that can be shown by the module
+	 *
+	 * @param array $data
+	 */
 	function associateContent($data){
 		//get all content that can be shown by the module
 		$types = $this->getContentTypeByLib($data['module']);
 		$this->can_handle = $types;
 	}
 
+	/**
+	 * Returns the content type[s] by library
+	 *
+	 * @param string $lib
+	 * @return array
+	 */
 	function getContentTypeByLib($lib){
 		$t = $this->getDbTables();
 		$id = $this->quote($lib);
 		$sql = "SELECT * FROM {$t['content_types']} WHERE `lib`=$id";
-		return $this->selectAll($sql);
+		$r = $this->selectAll($sql);
+		foreach ($r as $k=>$v){
+			$r[$k]['ping'] = unserialize($r[$k]['ping']);
+		}
+		return $r;
 	}
 
+	/**
+	 * Loads and assigns admin menus to the template object
+	 *
+	 */
 	function loadAdminMenus(){
 		$menus['content'] = array(
 		'contentlist'	=>	'Content Types List',
 		'datafields'	=>	'Data Fields',
 		'taxonomies'	=>	'Taxonomies',
 		'menus'			=>	'Menus',
-		'filemanager'	=>	'File Manager'
+		'gallery'		=>	'Image Gallery',
+		'filemanager'	=>	'File Manager',
+		'calendar'		=>	'Calendar'
 		);
 
 		$menus['system'] = array(
@@ -152,6 +291,7 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		'host'			=>	'Host Settings',
 		'db'			=>	'Database Settings',
 		'site'			=>	'Site Settings',
+		'social'		=>	'Social Settings',
 		'cache'			=>	'Cache Settings',
 		'theme'			=>	'Layout Settings',
 		'thirdparty'	=>	'Third Party Tools',
@@ -162,6 +302,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->toTpl('adminmenus',$menus);
 	}
 
+	/**
+	 * Returns the id of the content item based on it's slug name
+	 *
+	 * @param string $slug
+	 * @return int
+	 */
 	function getIdBySlug($slug){
 		$t = $this->getDbTables();
 		$slug = $this->quote($slug);
@@ -170,6 +316,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $sel['id'];
 	}
 
+	/**
+	 * Creates the index. TODO: multiple indexes for content types
+	 *
+	 */
 	function addIndex(){
 		$dirs = $this->dirs;
 		$this->createPath(APPL_PATH.$dirs['structure']['indexes'].DIR_SEP.'objects');
@@ -178,6 +328,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		//we now have an index for this content type
 	}
 
+	/**
+	 * Adds a content item to the index. 
+	 *
+	 * @param array $content
+	 * @param int $typeid
+	 */
 	function addToIndex($content,$typeid){
 		$dirs = $this->dirs;
 		try{
@@ -204,6 +360,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$index->commit();
 	}
 
+	/**
+	 * Gathers general data from the database
+	 *
+	 */
 	function gatherGeneralData(){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['general_data']}";
@@ -216,6 +376,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->toTpl('general_data',$general);
 	}
 
+	/**
+	 * Returns the content item specified
+	 *
+	 * @param mixed $type
+	 * @param int $id
+	 * @return array
+	 */
 	function getContent($type,$id){
 		$t = $this->getDbTables();
 		$d = $t['data'];
@@ -257,6 +424,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $content;
 	}
 
+	/**
+	 * Recursive. Returns a multi dimensional array of all previous taxonomies from the one specified
+	 *
+	 * @param int $id
+	 * @param array $array
+	 * @return array
+	 */
 	function getPreviousTaxonomies($id,$array=false){
 		$prev = $this->getTaxonomy($id);
 		$array[] = $prev;
@@ -271,6 +445,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 
 
+	/**
+	 * Returns a pager array based on number or results
+	 *
+	 * @param int $numResults
+	 * @return array
+	 */
 	function paginate($numResults=0){
 
 		$records = 20;
@@ -288,6 +468,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $pager;
 	}
 
+	/**
+	 * Collects the addons menu actions to be used by the addon menus in the admin area
+	 *
+	 */
 	function collectAddonMenuActions(){
 		$addons = $this->addons;
 		$apps = $this->applications->toArray();
@@ -313,6 +497,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->tpl->assign('addonMenuActions',$actions);
 	}
 
+	/**
+	 * Loads tinyMCE editor buttons that are registered by addons
+	 *
+	 */
 	function loadEditorBtns(){
 		if(!$this->editorBtnsLoaded){
 			$addons = $this->addons;
@@ -341,6 +529,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Returns the content item slug based on checks.
+	 *
+	 * @param array $data
+	 * @param boolean $isUpdate
+	 * @return string
+	 */
 	function getSlug($data,$isUpdate=false){
 		//seek if a 'slug' field exists...
 		if($data['slug']){
@@ -350,7 +545,7 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 			$slug = $this->doQoolHook('pre_slugify_assign',$slug);
 			$slug = $this->slugify($data['title']);
 			$slug = $this->doQoolHook('post_slugify_assign',$slug);
-			
+
 		}else{
 			$slug =  'content-'.time();
 			$slug = $this->doQoolHook('post_auto_slug_assign',$slug);
@@ -365,9 +560,15 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 			$slug = 'content-'.time();
 		}
 		return $slug;
-		
+
 	}
 
+	/**
+	 * Check if the slug is a content item
+	 *
+	 * @param string $slug
+	 * @return boolean
+	 */
 	function isObject($slug){
 		$t = $this->getDbTables();
 		$slug = $this->quote($slug);
@@ -379,6 +580,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return false;
 	}
 
+	/**
+	 * Convert a string to a slug compatible string
+	 *
+	 * @param string $str
+	 * @return string
+	 */
 	function slugify($str){
 		$str = trim($str);
 		//first replace greek-letters with latin ones:
@@ -392,12 +599,22 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $text;
 	}
 
+	/**
+	 * Returns all content types
+	 *
+	 * @return array
+	 */
 	function getContentTypes(){
 		$t = $this->getDbTables();
 		$sql = "SELECT id,title FROM {$t['content_types']}";
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Returns all registered and hooked listings
+	 *
+	 * @return array
+	 */
 	function getListings(){
 		$types[] = array(
 		'id'=>'getRecent','title'=>'Recent Objects'
@@ -406,12 +623,25 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns the content type array
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getContentType($id){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['content_types']} WHERE id=$id";
-		return $this->selectRow($sql);
+		$r = $this->selectRow($sql);
+		$r['ping'] = unserialize($r['ping']);
+		return $r;
 	}
 
+	/**
+	 * Return all registered and hooked mime types
+	 *
+	 * @return array
+	 */
 	function getMimeTypes(){
 		$types[] = array(
 		'id'=>'text/html','title'=>'text/html'
@@ -420,6 +650,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns all registered and hooked captcha adapters
+	 *
+	 * @return array
+	 */
 	function getCaptchaAdapters(){
 		$types[] = array('id'=>'Dumb','title'=>'String to be typed reverse');
 		$types[] = array('id'=>'Figlet','title'=>'Figlet');
@@ -429,15 +664,23 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns all registered and hooked field types
+	 *
+	 * @return array
+	 */
 	function getFieldTypes(){
 		$types[] = array('id'=>'textinput','title'=>'Text Input');
 		$types[] = array('id'=>'selectbox','title'=>'Select Box');
-		$types[] = array('id'=>'editor','title'=>'Visual Editor');
+		$types[] = array('id'=>'editor','title'=>'Full Visual Editor');
+		$types[] = array('id'=>'rte','title'=>'Simple Visual Editor');
 		$types[] = array('id'=>'editarea','title'=>'Code Editor');
+		$types[] = array('id'=>'datepicker','title'=>'Date Picker');
 		$types[] = array('id'=>'checkbox','title'=>'Check Box');
 		$types[] = array('id'=>'textarea','title'=>'Multi Line Text');
 		$types[] = array('id'=>'radiobutton','title'=>'Radio Button');
 		$types[] = array('id'=>'fileinput','title'=>'Upload file input');
+		$types[] = array('id'=>'dropboxchooser','title'=>'DropBox File Chooser');
 		$types[] = array('id'=>'passinput','title'=>'Password Input');
 		$types[] = array('id'=>'treeselectbox','title'=>'Tree Select Box');
 		$types[] = array('id'=>'multiselectbox','title'=>'Multi Select Box');
@@ -448,6 +691,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Return all registered and hooked pools
+	 *
+	 * @return array
+	 */
 	function getPools(){
 
 		$types[] = array('id'=>'getPools','title'=>'Available Pools');
@@ -467,6 +715,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+
+
+	/**
+	 * Returns all menu items for a menu. Uses a pre specified pool type
+	 *
+	 * @return array
+	 */
 	function getMenuItems(){
 		$t = $this->getDbTables();
 		$type = $this->quote($this->pool_type);
@@ -475,6 +730,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $list;
 	}
 
+	/**
+	 * Returns a menu item
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getMenuItem($id){
 		$t = $this->getDbTables();
 
@@ -483,6 +744,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $list;
 	}
 
+	/**
+	 * Returns an array with all content objects
+	 *
+	 * @return array
+	 */
 	function getObjects(){
 		$t = $this->getDbTables();
 		$sql = "SELECT {$t['objects']}.id,CONCAT({$t['content_types']}.title,': ',{$t['object_data']}.value) as title
@@ -495,6 +761,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $list;
 	}
 
+	/**
+	 * Return all menus
+	 *
+	 * @return array
+	 */
 	function getMenus(){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['menus']} ORDER BY `id` ASC";
@@ -502,6 +773,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $list;
 	}
 
+	/**
+	 * Returns the menu array
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getMenu($id){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['menus']} WHERE id=$id ORDER BY `id` ASC";
@@ -509,6 +786,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $list;
 	}
 
+	/**
+	 * Returns a tree of taxonomies based on a pre assigned pool type
+	 *
+	 * @return array
+	 */
 	function getTaxonomiesTree(){
 		$t = $this->getDbTables();
 		$d = $t['taxonomies'];
@@ -526,6 +808,16 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 	}
 
+	/**
+	 * Returns object taxonomies based on pre assigned pool types and modes
+	 * if mode and !assigned pool type -> Return objects by type
+	 * if !mode and assigned pool -> Return object taxonomies based on parent var and type
+	 * else -> Return all taxonomies based on parent var
+	 *
+	 * @param int $parent
+	 * @param boolean $mode
+	 * @return array
+	 */
 	function getObjectTaxonomies($parent=0,$mode=true){
 
 		$t = $this->getDbTables();
@@ -547,6 +839,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 	}
 
 
+	/**
+	 * Returns all menu item kids. Recursive.
+	 *
+	 * @param int $id
+	 * @param array $kids
+	 * @return array
+	 */
 	function getMenuItemKids($id,$kids=array()){
 		$tax = $this->getMenuItemKid($id);
 
@@ -563,6 +862,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $kids;
 	}
 
+	/**
+	 * Returns all menu items that are kids from another menu item specified by it's id
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getMenuItemKid($id){
 		$t = $this->getDbTables();
 		$d = $t['menu_items'];
@@ -572,6 +877,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Returns all taxonomy anchestors. Recursive
+	 *
+	 * @param int $id
+	 * @param array $taxonomies
+	 * @return array
+	 */
 	function getTaxonomyAnchestors($id,$taxonomies=array()){
 		$tax = $this->getTaxonomyKid($id);
 
@@ -588,6 +900,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $taxonomies;
 	}
 
+	/**
+	 * Returns all kids of the specified taxonomy
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getTaxonomyKid($id){
 		$t = $this->getDbTables();
 		$d = $t['taxonomies'];
@@ -597,6 +915,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Returns the taxonomy array
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getTaxonomy($id){
 		$t = $this->getDbTables();
 		$d = $t['taxonomies'];
@@ -605,6 +929,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectRow($sql);
 	}
 
+	/**
+	 * Retrieves all object taxonomies
+	 *
+	 * @return array
+	 */
 	function getAllObjectTaxonomies(){
 		$t = $this->getDbTables();
 		$d = $t['taxonomies'];
@@ -613,6 +942,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Returns all taxonomy types
+	 *
+	 * @return array
+	 */
 	function getTaxonomyTypes(){
 		$t = $this->getDbTables();
 		$dg = $t['taxonomy_types'];
@@ -620,6 +954,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Returns all registered and hooked libraries
+	 *
+	 * @return array
+	 */
 	function getLibraries(){
 		$types[] = array(
 		'id'=>'default','title'=>'Default'
@@ -628,6 +967,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns all registered and hooked header types
+	 *
+	 * @return array
+	 */
 	function getHeaderTypes(){
 		$types[] = array(
 		'id'=>'text/html','title'=>'text/html'
@@ -636,6 +980,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns the addons node from the config xml as an array for use by the frontend
+	 *
+	 * @return array
+	 */
 	function getApplications(){
 		$types[] = array(
 		'id'=>'default','title'=>'Default'
@@ -647,6 +996,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Collects available content to be used by the template
+	 *
+	 */
 	function collectAvailableContent(){
 		$t = $this->getDbTables();
 		$dg = $t['content_types'];
@@ -656,6 +1009,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->tpl->assign('contentAvailable',$sel);
 	}
 
+	/**
+	 * Cleans the post variable
+	 *
+	 * @param array $data
+	 * @return array
+	 */
 	function cleanPost($data){
 		unset($data['controller']);
 		unset($data['module']);
@@ -670,6 +1029,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $data;
 	}
 
+	/**
+	 * Cleans the $_FILES array
+	 *
+	 */
 	function cleanFiles(){
 		$i=0;
 		foreach ($_FILES as $k=>$v){
@@ -691,6 +1054,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Saves a widget state
+	 *
+	 */
 	public function savewidgetstateAction(){
 		$dirs = $this->dirs;
 		$data = $this->_request->getParams();
@@ -721,6 +1088,7 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 			$slots = $xml->slots;
 			$i = 0;
 			foreach ($slots->slot as $k=>$v){
+                
 				$vo = $this->jsonArray($v);
 				if($vo['@attributes']['name']==$data['slotname']){
 					$xml->slots->slot[$i] = $data['widgetname'];
@@ -738,6 +1106,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		die();
 	}
 
+	/**
+	 * Deletes the specified id from the table
+	 *
+	 */
 	public function ajaxdeleteAction(){
 		$t = $this->getDbTables();
 		$data = $this->_request->getParams();
@@ -754,6 +1126,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		die();
 	}
 
+	/**
+	 * Updates the content item and adds or removes the taxonomy from it.
+	 *
+	 */
 	public function ajaxtaxonomyupdateAction(){
 		$t = $this->getDbTables();
 		$data = $this->_request->getParams();
@@ -773,6 +1149,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		die();
 	}
 
+	/**
+	 * Removes any taxonomy relation for the specified field and object 
+	 *
+	 * @param int $fieldid
+	 * @param int $objectid
+	 */
 	function removeTaxRelationWhereDatafield($fieldid,$objectid){
 		$t = $this->getDbTables();
 		$sql = "SELECT id FROM {$t['object_to_taxonomy']} WHERE data_id={$fieldid} AND object_id={$objectid}";
@@ -782,6 +1164,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Collects addons creation options to be used by the create menu in the admin area
+	 *
+	 */
 	function collectAddonCreationActions(){
 		$addons = $this->addons;
 		$apps = $this->applications->toArray();
@@ -807,10 +1193,20 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 
 
+	/**
+	 * Returns the database object from the registry
+	 *
+	 * @return array
+	 */
 	function getDbTables(){
 		return Zend_Registry::get('database');
 	}
 
+	/**
+	 * Builds the language array to be used by template and core files
+	 *
+	 * @return unknown
+	 */
 	function buildLanguage(){
 		$config = $this->config;
 		Zend_Registry::set('currentlang',$config->languages->backend->language);
@@ -827,6 +1223,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $language;
 	}
 
+	/**
+	 * Checks if the user has the rights to access the page. 
+	 *
+	 */
 	function requirePriviledges(){
 		$level = $this->level;
 		$data = $this->_request->getParams();
@@ -849,6 +1249,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Returns the id of the user group based on the user group level
+	 *
+	 * @param int $level
+	 * @return int
+	 */
 	function getUserGroupIdByLevel($level){
 		$t = $this->getDbTables();
 		$sql = "SELECT id FROM {$t['user_groups']} WHERE `level`=$level";
@@ -856,6 +1262,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $r['id'];
 	}
 
+	/**
+	 * Returns a user group based on an id
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getUserGroupById($id){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['user_groups']} WHERE `id`=$id";
@@ -863,10 +1275,21 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $r;
 	}
 
+	/**
+	 * Adds a message to the session so that it will be shown to the user
+	 *
+	 * @param array $data
+	 */
 	function addMessage($data){
 		$_SESSION['message'] = $data;
 	}
 
+	/**
+	 * Returns a user field
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getUserField($id){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['user_profile_fields']} WHERE `id`=$id";
@@ -875,6 +1298,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 	}
 
 
+	/**
+	 * Returns a user by his id
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getUserById($id){
 		$t = $this->getDbTables();
 		$id = (int) $id;
@@ -883,6 +1312,15 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectRow($sql);
 	}
 
+	/**
+	 * Unzips a zip archive to the specified location
+	 *
+	 * @param string $file
+	 * @param string $source
+	 * @param string $destination
+	 * @param boolean $folderByName
+	 * @return boolean
+	 */
 	function unzip($file,$source,$destination,$folderByName=false){
 		$zip = new ZipArchive();
 		if ($zip->open($source.$file['name']) !== TRUE) {
@@ -905,12 +1343,23 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return true;
 	}
 
+	/**
+	 * Convert an object to an array
+	 *
+	 * @param object $ob
+	 * @return array
+	 */
 	public function jsonArray($ob){
 		$ob = json_encode($ob);
 		$ob = json_decode($ob,1);
 		return $ob;
 	}
 
+	/**
+	 * Reads the config file and returns a simpleXMLElement object
+	 *
+	 * @return object
+	 */
 	function readConfigFile(){
 		try {
 			$dirs = $this->dirs;
@@ -923,6 +1372,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Connect to the database
+	 *
+	 */
 	private function connectDB(){
 
 		try {
@@ -964,6 +1417,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->db = $db;
 	}
 
+	/**
+	 * Translate a string
+	 *
+	 * @param string $value
+	 * @param boolean $echo
+	 * @return string
+	 */
 	function t($value,$echo=false){
 		$lang = $this->language;
 		//a simple way to keep track of strings that need translation
@@ -986,6 +1446,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Open and save a file
+	 *
+	 * @param string $filepath
+	 * @param string $data
+	 * @return boolean
+	 */
 	function savefile($filepath,$data){
 		try {
 			$file = fopen($filepath,'w');
@@ -997,6 +1464,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Scans a directory and returns it's contents as an array
+	 *
+	 * @param string $dir
+	 * @return array
+	 */
 	function scanDir($dir){
 
 		$Dir = opendir($dir);
@@ -1036,6 +1509,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $data;
 	}
 
+	/**
+	 * Loads a cached object
+	 *
+	 * @param string $name
+	 * @return mixed
+	 */
 	public function loadCache($name){
 		if($this->hasCache){
 			$cacheId = $this->prefix.$name."_".md5($name);
@@ -1048,6 +1527,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return false;
 	}
 
+	/**
+	 * Sets up the cache object for the specified controller
+	 *
+	 * @param string $controller
+	 */
 	public function setupCache($controller){
 		//lets see if cache is on for backend
 		if($this->config->cache->rules->cacheadmin==0){
@@ -1089,7 +1573,14 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->cache = Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
 		$this->cache = $this->doQoolHook('post_setupcache',$this->cache);
 	}
-	
+
+	/**
+	 * Returns the id of the field specified by the params
+	 *
+	 * @param string $title
+	 * @param int $type
+	 * @return int
+	 */
 	function getDataField($title,$type){
 		$title = $this->quote($title);
 		$t = $this->getDbTables();
@@ -1097,6 +1588,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $field['id'];
 	}
 
+	/**
+	 * Sets up the template object
+	 *
+	 */
 	private function setupTemplate(){
 		$tpl = $this->tplEngine;
 		$tpl = ucfirst($tpl);
@@ -1107,10 +1602,21 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->tpl = $this->doQoolHook('post_setuptemplate',$this->tpl);
 	}
 
+	/**
+	 * Assigns data to the template
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 */
 	public function toTpl($key,$value){
 		$this->tpl->assign($key,$value);
 	}
 
+	/**
+	 * Creates the path in the file system if it doesn't exist
+	 *
+	 * @param unknown_type $path
+	 */
 	function createPath($path){
 
 		$path = explode("/",$path);
@@ -1120,6 +1626,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Checks if the folder exists and creates it if not
+	 *
+	 * @param string $dir
+	 */
 	function dirCheckCreate($dir){
 		if(file_exists($dir)){
 			return ;
@@ -1131,9 +1642,21 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return ;
 	}
 
+	/**
+	 * Quotes data to be used by the db layer
+	 *
+	 * @param mixed $val
+	 * @return mixed
+	 */
 	function quote($val){
 		return $this->db->quote($val);
 	}
+	/**
+	 * Run a query and return a single row
+	 *
+	 * @param string $sql
+	 * @return array
+	 */
 	function selectRow($sql){
 		$this->debug['queries']++;
 		$this->debug['actualQueries'][] = $sql;
@@ -1141,11 +1664,23 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $c;
 	}
 
+	/**
+	 * Runs a query and returns all rows
+	 *
+	 * @param string $sql
+	 * @return array
+	 */
 	function selectAll($sql){
 		$c = $this->db->fetchAll($sql);
 		return $c;
 	}
 
+	/**
+	 * Runs a query and limits results based on predefined data
+	 *
+	 * @param string $sql
+	 * @return array
+	 */
 	function selectAllPaged($sql){
 		//set the current page
 		$data = $this->_request->getParams();
@@ -1168,33 +1703,82 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 
 
+	/**
+	 * Deletes from database
+	 *
+	 * @param string $table
+	 * @param int $id
+	 * @param string $field
+	 */
 	function delete($table,$id,$field='id'){
 		$this->db->delete($table,"$field=$id");
 	}
 
+	/**
+	 * Updates a table row data
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @param int $id
+	 * @param string $field
+	 * @param string $extrasql
+	 */
 	function update($table,$data,$id,$field='id',$extrasql=''){
+		//remove csrf
+		unset($data['csrf']);
 		$this->db->update($table,$data,"`{$field}`=".$id.$extrasql);
 	}
 
+	/**
+	 * Inserts data to the database
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @return int
+	 */
 	function save($table,$data){
+		//remove csrf
+		unset($data['csrf']);
 		$this->db->insert($table,$data);
 		return $this->db->lastInsertId();
 	}
 
+	/**
+	 * A way to have the mysql replace command with the Zend db adapter
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @param int $id
+	 * @param string $field
+	 */
 	function replace($table,$data,$id,$field='id'){
+		//remove csrf
+		unset($data['csrf']);
 		$this->delete($table,$this->quote($id),$field);
 		$this->save($table,$data);
 	}
 
+	/**
+	 * Displays an error message
+	 *
+	 * @param string $message
+	 */
 	public function triggerError($message){
 		echo "Error: ".$message;
 	}
 
+	/**
+	 * Insert content to the database
+	 *
+	 * @param array $data
+	 * @return array
+	 */
 	function insertContent($data=false){
 		$t = $this->getDbTables();
 		if(!$data){
 			$data = $this->_request->getParams();
 		}
+
 		//what type of content are we adding here?
 		$type = (int) $data['contenttype'];
 		//get all needed fields
@@ -1215,6 +1799,7 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 			}
 		}
 
+
 		//create a new object and get the id
 		$objID = $this->save($t['objects'],array("slug"=>$this->getSlug($data),"datestr"=>time(),"type_id"=>$type));
 		//upload files if any
@@ -1225,7 +1810,9 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 			$thepath = $this->uploadGeneral('contentnew');
 		}
 		foreach ($files as $k=>$v){
+
 			if(is_array($v['name'])){
+
 				$i = 0;
 				foreach ($v['name'] as $ko=>$vo){
 					if($v['name'][$i]!=''){
@@ -1260,6 +1847,8 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 				$this->save($t['object_data'],array("object_id"=>$objID,"name"=>$k,"value"=>$v));
 			}
 		}
+		//we also need to run any pings needed by this type
+		$this->pingServices($type);
 		//we now have to get the content and index it...
 		$content = $this->getContent($data['contenttype'],$objID);
 		$this->addToIndex($content,$data['contenttype']);
@@ -1267,6 +1856,60 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return array($objID,$type);
 	}
 
+	/**
+	 * Runs any ping services assigned to the content type
+	 *
+	 * @param string $type
+	 */
+	function pingServices($type){
+
+		$this->doQoolHook('before_ping_services',Zend_Registry::get('currentslug'));
+		//get content type
+		$type = $this->getContentType($type);
+		$data = array();
+		$data['content_type'] = $type['title'];
+		$data['slug'] = Zend_Registry::get('currentslug');
+		$data['title'] = $this->config->site->frontend_title;
+		foreach ($type['ping'] as $k=>$v){
+			if(method_exists($this,$v)){
+				$this->$v($data);
+			}
+		}
+		$this->doQoolHook('after_ping_services',Zend_Registry::get('currentslug'));
+	}
+
+	function uploadGeneral($action,$id=false){
+		$dirs = $this->dirs;
+		$form = new Zend_Form;
+		$form->setView($this->tpl);
+		if ($this->_request->isPost()) {
+			$formData = $this->_request->getPost();
+			if ($form->isValid($formData)) {
+				$upload = new Zend_File_Transfer_Adapter_Http();
+				$this->createPath(APPL_PATH.$dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d"));
+				$upload->setDestination(APPL_PATH.$dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d").DIR_SEP);
+				try {
+					$upload->receive();
+					return $dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d").DIR_SEP;
+				} catch (Zend_File_Transfer_Exception $e) {
+					if($id){
+						$params = array("message"=>$e->getMessage(),"msgtype"=>'error');
+					}else{
+						$params = array("message"=>$e->getMessage(),"msgtype"=>'error');
+					}
+					$this->addMessage($params);
+					$this->_helper->redirector($action, 'index','admin',array('id'=>$id));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Updates a content item
+	 *
+	 * @param array $data
+	 * @return array
+	 */
 	function updateContent($data=false){
 		$t = $this->getDbTables();
 		if(!$data){
@@ -1333,15 +1976,22 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return array($data['contentid'],$type);
 	}
 
+	/**
+	 * Accepts a taxonomy name and a taxonomy type and if not exists it creates it and returns it's id. 
+	 *
+	 * @param string $tax
+	 * @param string $type
+	 * @return int
+	 */
 	function maybeCreateTaxonomy($tax,$type){
 		$tax = trim($tax);
 		if($tax){
 
 			$t = $this->getDbTables();
 			$taxclean = $this->quote($tax);
-			
+
 			//check if a taxonomy with the same name and type exists.
-			
+
 			$taxonomy = $this->selectRow("SELECT id FROM {$t['taxonomies']} WHERE `title`={$taxclean} AND `taxonomy_type`=$type");
 			if($taxonomy['id']){
 				return $taxonomy['id'];
@@ -1352,6 +2002,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return false;
 	}
 
+	/**
+	 * Accepts an array with parameters and mixed values and returns a Zend Form Element to be used by a Zend Form object
+	 *
+	 * @param array $v
+	 * @param mixed $value
+	 * @return object
+	 */
 	function getFormElement($v,$value=''){
 		$config = $this->config;
 		$this->toTpl('hasForm',1);
@@ -1369,9 +2026,23 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 					$element->setValue($value);
 				}
 				break;
+			case "rte":
+				$element = new Zend_Form_Element_Textarea($v['name']);
+				$element->setAttrib('class','cleditor span12');
+				$this->toTpl("isRTE",1);
+				if($value!=''){
+					$element->setValue($value);
+				}
+				break;
+
 			case "fileinput":
 				$element = new Zend_Form_Element_File($v['name']);
 				$element->setAttrib('class','input-file');
+				break;
+			case "dropboxchooser":
+				$element = new Zend_Form_Element_Dropbox($v['name']);
+				$element->setAttrib('style','visibility:hidden');
+				$element->setAttrib('data-multiselect',true);
 				break;
 			case "captcha":
 				if($config->site->captcha_adapter=='ReCaptcha'){
@@ -1442,6 +2113,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 					$element->setValue($value);
 				}
 				break;
+			case "datepicker":
+				$element = new Zend_Form_Element_Text($v['name']);
+				$element->setAttrib('class','input-xlarge datepicker');
+				if($value!=''){
+					$element->setValue($value);
+				}
+				break;
 			case "imageselect":
 				$element = new Zend_Form_Element_Text($v['name']);
 				$element->setAttrib('class','imageselector');
@@ -1507,8 +2185,8 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 				break;
 			case "multiselectbox":
-
 				$element = new Zend_Form_Element_Multiselect($v['name']);
+				$element->setAttrib('data-rel','chosen');
 				if($v['use_pool'] && method_exists($this,$v['use_pool'])){
 					if($v['pool_type']!='0'){
 						$this->pool_type = $v['pool_type'];
@@ -1524,20 +2202,15 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 						}
 					}
 					if(is_array($value)){
-
 						foreach ($value as $a){
 							$vals[] = $a['selected_value'];
-
 						}
 						$element->setValue($vals);
-
 					}
-
 				}else{
 					//the pools might have been assigned by an addon
 					//include the file and run it.
 					require_once($this->dirs['structure']['addons'].DIR_SEP.Zend_Registry::get('controller').DIR_SEP."func.php");
-
 					if($v['novalue']){
 						$element->addMultiOption(0,$this->t('No Selection'));
 					}
@@ -1626,6 +2299,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $element;
 	}
 
+	/**
+	 * Returns all registered and hooked host protocols
+	 *
+	 * @return array
+	 */
 	private function getHostProtocols(){
 		$protocols[] = array('id'=>'http://','title'=>'HTTP');
 		$protocols[] = array('id'=>'https://','title'=>'HTTPS');
@@ -1633,6 +2311,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $protocols;
 	}
 
+	/**
+	 * Returns all registered and hooked supported databases
+	 *
+	 * @return array
+	 */
 	private function getSupportedDbs(){
 		$protocols[] = array('id'=>'mysql','title'=>'MySQL');
 		$protocols[] = array('id'=>'sqlite','title'=>'SQLite');
@@ -1640,6 +2323,11 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $protocols;
 	}
 
+	/**
+	 * Returns the user groups with their level
+	 *
+	 * @return array
+	 */
 	function getUserGroupLevel(){
 
 		$t = $this->getDbTables();
@@ -1649,6 +2337,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectAll($sql);
 	}
 
+	/**
+	 * Creates a form for email sending and assigns it to the template or displays it
+	 *
+	 */
 	public function mailtoAction(){
 		$this->totpl('theInclude','general');
 		Zend_Registry::set('module','Mailto User');
@@ -1684,6 +2376,12 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 
 	}
 
+	/**
+	 * Returns a user based on an email
+	 *
+	 * @param string $email
+	 * @return array
+	 */
 	function getUserByEmail($email){
 		$t = $this->getDbTables();
 		$email = $this->quote($email);
@@ -1691,6 +2389,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $this->selectRow($sql);
 	}
 
+	/**
+	 * Sends an email to a user
+	 *
+	 */
 	public function mailtouserAction(){
 		if ($this->_request->isPost()) {
 			try{
@@ -1723,9 +2425,14 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		}
 	}
 
+	/**
+	 * Keeps a hooks log
+	 *
+	 * @param string $hook
+	 */
 	function keepHooksLog($hook){
 		//only available during development
-		return ;
+
 		$xml = readLangFile(APPL_PATH.'config'.DIR_SEP."hooksdb.xml");
 		//check if the value already exists...
 		$i = 0;
@@ -1742,6 +2449,13 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$xml->asXML(APPL_PATH.'config'.DIR_SEP."hooksdb.xml");
 	}
 
+	/**
+	 * Executes a hook. Accepts hook name, and optional data
+	 *
+	 * @param string $a
+	 * @param mixed $data
+	 * @return mixed
+	 */
 	function doQoolHook($a,$data=false) {
 		$this->keepHooksLog($a);
 		$hooks = $this->getRegisteredHooks();
@@ -1773,6 +2487,10 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $data;
 	}
 
+	/**
+	 * Collects hooks and registers them for use by the system
+	 *
+	 */
 	function collectHooks(){
 		$addons = $this->addons;
 		$apps = $this->applications->toArray();
@@ -1851,15 +2569,30 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		$this->registerHooks($actions);
 	}
 
+	/**
+	 * Registeres hooks
+	 *
+	 * @param array $hooks
+	 */
 	function registerHooks($hooks){
 
 		$this->hooks = $hooks;
 	}
 
+	/**
+	 * Returns all registered hooks
+	 *
+	 * @return array
+	 */
 	function getRegisteredHooks(){
 		return $this->hooks;
 	}
 
+	/**
+	 * Returns Twitter Bootstrap Glyphicons class names to be used for display
+	 *
+	 * @return array
+	 */
 	function getGlyphIcons(){
 		$dirs = $this->dirs;
 		$file = file(APPL_PATH.$dirs['structure']['lib'].DIR_SEP."css".DIR_SEP."icons.txt");
@@ -1869,36 +2602,85 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $types;
 	}
 
+	/**
+	 * Returns an array with all images uploaded to the system
+	 *
+	 * @return array
+	 */
 	function getImagesUploaded(){
 		$dirs = $this->dirs;
 		$config = $this->config;
 		$host = $config->host->http.$config->host->subdomain.$config->host->domain.$config->host->folder.DIR_SEP;
 		$uploads = $this->scanDir(APPL_PATH.$dirs['structure']['uploads'].DIR_SEP);
 		foreach ($uploads as $v){
-			if($v['type']=='folder'){
-				$c = $this->scanDir($v['id'].DIR_SEP);
-				foreach ($c as $a){
-					if($a['type']=='folder'){
-						$b = $this->scanDir($a['id'].DIR_SEP);
-						foreach ($b as $f){
-							if($f['type']=='folder'){
-								$g = $this->scanDir($f['id'].DIR_SEP);
-								foreach ($g as $t){
-									$images[str_replace($dirs['structure']['uploads'].DIR_SEP,'',$t['id'])] = $host.$t['id'];
+			if(!preg_match('#tmb#',$v['id']) && !preg_match("#quarantine#",$v['id'])){
+				if($v['type']=='folder'){
+					$path = $v['title']."/";
+					$c = $this->scanDir($v['id'].DIR_SEP);
+					foreach ($c as $a){
+						if($a['type']=='folder'){
+							$path1 =$path. $a['title']."/";
+							$b = $this->scanDir($a['id'].DIR_SEP);
+							foreach ($b as $f){
+								if($f['type']=='folder'){
+									$path2 =$path1. $f['title']."/";
+									$g = $this->scanDir($f['id'].DIR_SEP);
+									foreach ($g as $t){
+										if($this->isImage($t['id'])){
+											
+											$images[$t['id']] = $host.$dirs['structure']['uploads'].DIR_SEP.$path2.$t['title'];
+											
+										}
+									}
+								}else{
+									if($this->isImage($f['id'])){
+
+										$images[$f['id']] = $host.$dirs['structure']['uploads'].DIR_SEP.$path1.$f['title'];
+										
+									}
 								}
 							}
+						}else{
+							if($this->isImage($a['id'])){
+								$images[$a['id']] = $host.$dirs['structure']['uploads'].DIR_SEP.$path.$a['title'];
+								
+							}
 						}
-					}else{
-
+					}
+				}else{
+					if($this->isImage($v['id'])){
+						$images[$v['id']] = $host.$dirs['structure']['uploads'].DIR_SEP.$v['title'];
+					
 					}
 				}
-			}else{
-
 			}
 		}
+		
 		return $images;
 	}
 
+	/**
+	 * Check if the file is an image
+	 *
+	 * @param string $file
+	 * @return boolean
+	 */
+	function isImage($file){
+
+		//see if the file is an image
+		$img = explode(".",$file);
+		if(strtolower(end($img))=='png' || strtolower(end($img))=='jpg' || strtolower(end($img))=='jpeg' || strtolower(end($img))=='gif'){
+			return true;
+
+		}
+		return false;
+	}
+
+	/**
+	 * Gets all object items from the database in a simple way.
+	 *
+	 * @return array
+	 */
 	function getAllObjectSimple(){
 		$t = $this->getDbTables();
 		$sql = "SELECT {$t['objects']}. * , {$t['object_data']}.value as title FROM `{$t['objects']}` , `{$t['object_data']}` WHERE {$t['object_data']}.name='title' AND {$t['objects']}.id = {$t['object_data']}.object_id GROUP BY {$t['objects']}.slug";
@@ -1906,17 +2688,137 @@ class Qool_Backend_Action extends Zend_Controller_Action{
 		return $r;
 	}
 
+	/**
+	 * Adds data to the breadcrumbs array in the template.
+	 *
+	 * @param array $data
+	 */
 	function addToBreadcrumb($data){
 		$this->breadcrumbs[] = $data;
 		$this->toTpl('breadcrumbs',$this->breadcrumbs);
 	}
 
+	/**
+	 * Returns the contents of the specified widget
+	 *
+	 * @param int $id
+	 * @return array
+	 */
 	function getTextWidgetContents($id){
 		$id = $this->quote($id);
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['general_data']} WHERE `data_type`=$id";
 		$r = $this->selectRow($sql);
 		return unserialize($r['data_value']);
+	}
+
+	/**
+	 * Creates a file with data from a form.
+	 *
+	 * @param string $file
+	 * @param string $filename
+	 */
+	function createFile($file,$filename){
+		$dirs = $this->dirs;
+		$file = explode('base64,',$file);
+		file_put_contents($dirs['structure']['uploads'].DIR_SEP.$filename,base64_decode($file[1]));
+	}
+
+	/**
+	 * Return all registered and hooked ping services
+	 *
+	 * @return array
+	 */
+	function getPingServices(){
+		$types[] = array('id'=>'pingGoogleBlogSearch','title'=>'Google Blogs');
+		$types[] = array('id'=>'pingomatic','title'=>'Ping-o-matic');
+		$types = $this->doQoolHook('post_ping_services_assign',$types);
+		return $types;
+	}
+
+	/**
+	 * Pings Google blogs search
+	 *
+	 * @param array $data
+	 * @return string
+	 */
+	function pingGoogleBlogSearch($data){
+		$title = urlencode($this->config->site->frontend_title);
+		$url = $_SESSION['SITE_URL'];
+		$xml = $url.urlencode("feed/{$data['content_type']}");
+		$file = file_get_contents("http://blogsearch.google.com/ping?name=$title&url=$url&changesURL=$xml");
+		return $file;
+	}
+
+	/**
+	 * Pings Ping-o-matic
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	function pingomatic($data) {
+		$url = $_SESSION['SITE_URL'];
+		$url .= $data['content_type']."/".$data['slug'];
+		$content='<?xml version="1.0"?>'.
+		'<methodCall>'.
+		' <methodName>weblogUpdates.ping</methodName>'.
+		'  <params>'.
+		'   <param>'.
+		'    <value>'.$data['title'].'</value>'.
+		'   </param>'.
+		'  <param>'.
+		'   <value>'.$url.'</value>'.
+		'  </param>'.
+		' </params>'.
+		'</methodCall>';
+		$headers="POST / HTTP/1.0\r\n".
+		"Mozilla/5.0 (Windows NT 6.1; rv:20.0) Gecko/20100101 Firefox/20.0\r\n".
+		"Host: rpc.pingomatic.com\r\n".
+		"Content-Type: text/xml\r\n".
+		"Content-length: ".strlen($content);
+		$request=$headers."\r\n\r\n".$content;
+		$response = "";
+		$fs=fsockopen('rpc.pingomatic.com',80, $errno, $errstr);
+		if ($fs) {
+			fwrite ($fs, $request);
+			while (!feof($fs)) $response .= fgets($fs);
+			if ($debug) echo "<xmp>".$response."</xmp>";
+			fclose ($fs);
+			preg_match_all("/<(name|value|boolean|string)>(.*)<\/(name|value|boolean|string)>/U",$response,$ar, PREG_PATTERN_ORDER);
+			for($i=0;$i<count($ar[2]);$i++) $ar[2][$i]= strip_tags($ar[2][$i]);
+			return array('status'=> ( $ar[2][1]==1 ? 'ko' : 'ok' ), 'msg'=>$ar[2][3] );
+		} else {
+			return array('status'=>'ko', 'msg'=>$errstr." (".$errno.")");
+		}
+	}
+
+	function loadImgEditor($img,$image_info,$fileinfo){
+		$dirs = $this->dirs;
+		include_once($dirs['structure']['lib'].DIR_SEP.'js'.DIR_SEP.'imgeditor'.DIR_SEP.'editor.html');
+	}
+
+	public function serverSendMessage($message){
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+		echo "data: {$message}\n\n";
+		flush();
+	}
+
+	function memoryGetUsage(){
+		if ( substr(PHP_OS,0,3) == 'WIN'){
+			if ( substr( PHP_OS, 0, 3 ) == 'WIN' ){
+				$output = array();
+				exec( 'tasklist /FI "PID eq ' . getmypid() . '" /FO LIST', $output );
+				
+				return "(".trim(str_replace("Image Name:","",$output[1])).") Server Memory Usage: ".round(preg_replace( '/[\D]/', '', $output[5] ) /1024,2)."MB";
+			}
+		}else{
+			$pid = getmypid();
+			exec("ps -eo%mem,rss,pid | grep $pid", $output);
+			$output = explode("  ", $output[0]);
+			//rss is given in 1024 byte units
+			return "Server Memory Usage: ".round($output[1] / 1024,2)."MB";
+		}
 	}
 
 }

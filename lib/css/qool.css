@@ -1,132 +1,268 @@
-.well2{
-  min-height: 20px;
-  padding: 9px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px dashed rgba(0, 0, 0, 0.25);
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
+/* Flags */
 
-.well3{
-  min-height: 20px;
-  padding: 19px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc !important;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+.flag {
+	display: block;
+	padding-left: 13px !important;
+	float: left;
+	padding-right: 7px;
+	width: 16px;
+	height: 16px;
+	background:url('images/flags.png') no-repeat top left;
 }
-
-.drg{
-	cursor:move;
-}
-
-.filelistfull{
-	background:#fff;
-	display:block;
-	min-width:400px;
-	width:400px;
-}
-
-.dropdown-menu a.inline-block{
-	display:inline-block;
-	width:50%;
-}
-
-.popover{
-	z-index:1100;
-}
-
-.span3-half{
-	width:18% !important;
-}
-
-.span9-minushalf{
-	width:79.34% !important;
-}
-
-.row-fluid [class*="tspan"] {
-    margin-left: 1.9% !important;
-}
-
-.row-fluid [class*="dspan"]{
-    margin-left: 0 !important;
-}
-
-.indent1{
-	padding-left:15px;
-}
-.indent2{
-	padding-left:25px;
-}
-.indent3{
-	padding-left:35px;
-}
-.indent4{
-	padding-left:45px;
-}
-.indent5{
-	padding-left:55px;
-}
-.indent6{
-	padding-left:65px;
-}
-
-.minheightwell{
-	height:53px !important;
-}
-
-.boardwidget{
-	border:1px solid #ccc;
-	border-radius:5px;
-	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-
-.boardwidget h4{
-	display:block;
-	padding:0 0 0 15px;
-	border-bottom:1px solid #ccc;
-	height:100%;
-	position:relative;
-	color:#fff;
-	line-height:35px;
-	background-image: -moz-linear-gradient(top, #4a4a4a, #3a3a3a);
-  	background-image: -ms-linear-gradient(top, #4a4a4a, #3a3a3a);
-  	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#3a3a3a));
-  	background-image: -webkit-linear-gradient(top, #4a4a4a, #3a3a3a);
-  	background-image: -o-linear-gradient(top, #4a4a4a, #3a3a3a);
-  	background-image: linear-gradient(top, #4a4a4a, #3a3a3a);
-}
-
-.boardwidget .wellin{
-	padding:9px 15px;
-	background-color: #f5f5f5;
-}
-
-.table thead th{
-	font-size:11px !important;
-}
-
-.selectorimage{
-	
-}
-
-.miniheight{
-	height:18px;
-}
-
-.miniheight .btn{
-	padding: 9px 12px;
-}
+.flag.flag-01{background-position: 0 0;} 
+.flag.flag-ad{background-position: 0 -17px;} 
+.flag.flag-ae{background-position: 0 -34px;} 
+.flag.flag-af{background-position: 0 -51px;} 
+.flag.flag-ag{background-position: 0 -68px;} 
+.flag.flag-ai{background-position: 0 -85px;} 
+.flag.flag-al{background-position: 0 -102px;} 
+.flag.flag-am{background-position: 0 -119px;} 
+.flag.flag-an{background-position: 0 -136px;} 
+.flag.flag-ao{background-position: 0 -153px;} 
+.flag.flag-ap{background-position: 0 -170px;} 
+.flag.flag-aq{background-position: 0 -187px;} 
+.flag.flag-ar{background-position: 0 -204px;} 
+.flag.flag-as{background-position: 0 -221px;} 
+.flag.flag-at{background-position: 0 -238px;} 
+.flag.flag-au{background-position: 0 -255px;} 
+.flag.flag-aw{background-position: 0 -272px;} 
+.flag.flag-ax{background-position: 0 -289px;} 
+.flag.flag-az{background-position: 0 -306px;} 
+.flag.flag-ba{background-position: 0 -323px;} 
+.flag.flag-bb{background-position: 0 -340px;} 
+.flag.flag-bd{background-position: 0 -357px;} 
+.flag.flag-be{background-position: 0 -374px;} 
+.flag.flag-bf{background-position: 0 -391px;} 
+.flag.flag-bg{background-position: 0 -408px;} 
+.flag.flag-bh{background-position: 0 -425px;} 
+.flag.flag-bi{background-position: 0 -442px;} 
+.flag.flag-bj{background-position: 0 -459px;} 
+.flag.flag-bm{background-position: 0 -476px;} 
+.flag.flag-bn{background-position: 0 -493px;} 
+.flag.flag-bo{background-position: 0 -510px;} 
+.flag.flag-br{background-position: 0 -527px;} 
+.flag.flag-bs{background-position: 0 -544px;} 
+.flag.flag-bt{background-position: 0 -561px;} 
+.flag.flag-bv{background-position: 0 -578px;} 
+.flag.flag-bw{background-position: 0 -595px;} 
+.flag.flag-by{background-position: 0 -612px;} 
+.flag.flag-bz{background-position: 0 -629px;} 
+.flag.flag-ca{background-position: 0 -646px;} 
+.flag.flag-cc{background-position: 0 -663px;} 
+.flag.flag-cd{background-position: 0 -680px;} 
+.flag.flag-cf{background-position: 0 -697px;} 
+.flag.flag-cg{background-position: 0 -714px;} 
+.flag.flag-ch{background-position: 0 -731px;} 
+.flag.flag-ci{background-position: 0 -748px;} 
+.flag.flag-ck{background-position: 0 -765px;} 
+.flag.flag-cl{background-position: 0 -782px;} 
+.flag.flag-cm{background-position: 0 -799px;} 
+.flag.flag-cn{background-position: 0 -816px;} 
+.flag.flag-co{background-position: 0 -833px;} 
+.flag.flag-cr{background-position: 0 -850px;} 
+.flag.flag-cs{background-position: 0 -867px;} 
+.flag.flag-cu{background-position: 0 -884px;} 
+.flag.flag-cv{background-position: 0 -901px;} 
+.flag.flag-cx{background-position: 0 -918px;} 
+.flag.flag-cy{background-position: 0 -935px;} 
+.flag.flag-cz{background-position: 0 -952px;} 
+.flag.flag-da{background-position: 0 -969px;} 
+.flag.flag-de{background-position: 0 -986px;} 
+.flag.flag-dj{background-position: 0 -1003px;} 
+.flag.flag-dk{background-position: 0 -1020px;} 
+.flag.flag-dm{background-position: 0 -1037px;} 
+.flag.flag-do{background-position: 0 -1054px;} 
+.flag.flag-dz{background-position: 0 -1071px;} 
+.flag.flag-ec{background-position: 0 -1088px;} 
+.flag.flag-ee{background-position: 0 -1105px;} 
+.flag.flag-eg{background-position: 0 -1122px;} 
+.flag.flag-eh{background-position: 0 -1139px;} 
+.flag.flag-el{background-position: 0 -1156px;} 
+.flag.flag-en{background-position: 0 -1173px;} 
+.flag.flag-er{background-position: 0 -1190px;} 
+.flag.flag-es{background-position: 0 -1207px;} 
+.flag.flag-et{background-position: 0 -1224px;} 
+.flag.flag-eu{background-position: 0 -1241px;} 
+.flag.flag-fi{background-position: 0 -1258px;} 
+.flag.flag-fj{background-position: 0 -1275px;} 
+.flag.flag-fk{background-position: 0 -1292px;} 
+.flag.flag-fm{background-position: 0 -1309px;} 
+.flag.flag-fo{background-position: 0 -1326px;} 
+.flag.flag-fr{background-position: 0 -1343px;} 
+.flag.flag-fx{background-position: 0 -1360px;} 
+.flag.flag-ga{background-position: 0 -1377px;} 
+.flag.flag-gb{background-position: 0 -1394px;} 
+.flag.flag-gd{background-position: 0 -1411px;} 
+.flag.flag-ge{background-position: 0 -1428px;} 
+.flag.flag-gf{background-position: 0 -1445px;} 
+.flag.flag-gg{background-position: 0 -1462px;} 
+.flag.flag-gh{background-position: 0 -1479px;} 
+.flag.flag-gi{background-position: 0 -1496px;} 
+.flag.flag-gl{background-position: 0 -1513px;} 
+.flag.flag-gm{background-position: 0 -1530px;} 
+.flag.flag-gn{background-position: 0 -1547px;} 
+.flag.flag-gp{background-position: 0 -1564px;} 
+.flag.flag-gq{background-position: 0 -1576px;} 
+.flag.flag-gr{background-position: 0 -1593px;} 
+.flag.flag-gs{background-position: 0 -1610px;} 
+.flag.flag-gt{background-position: 0 -1627px;} 
+.flag.flag-gu{background-position: 0 -1644px;} 
+.flag.flag-gw{background-position: 0 -1661px;} 
+.flag.flag-gy{background-position: 0 -1678px;} 
+.flag.flag-hk{background-position: 0 -1695px;} 
+.flag.flag-hm{background-position: 0 -1712px;} 
+.flag.flag-hn{background-position: 0 -1729px;} 
+.flag.flag-hr{background-position: 0 -1746px;} 
+.flag.flag-ht{background-position: 0 -1763px;} 
+.flag.flag-hu{background-position: 0 -1780px;} 
+.flag.flag-id{background-position: 0 -1797px;} 
+.flag.flag-ie{background-position: 0 -1814px;} 
+.flag.flag-il{background-position: 0 -1831px;} 
+.flag.flag-im{background-position: 0 -1848px;} 
+.flag.flag-in{background-position: 0 -1865px;} 
+.flag.flag-io{background-position: 0 -1882px;} 
+.flag.flag-iq{background-position: 0 -1899px;} 
+.flag.flag-ir{background-position: 0 -1916px;} 
+.flag.flag-is{background-position: 0 -1933px;} 
+.flag.flag-it{background-position: 0 -1950px;} 
+.flag.flag-je{background-position: 0 -1967px;} 
+.flag.flag-jm{background-position: 0 -1984px;} 
+.flag.flag-jo{background-position: 0 -2001px;} 
+.flag.flag-jp{background-position: 0 -2018px;} 
+.flag.flag-ke{background-position: 0 -2035px;} 
+.flag.flag-kg{background-position: 0 -2052px;} 
+.flag.flag-kh{background-position: 0 -2069px;} 
+.flag.flag-ki{background-position: 0 -2086px;} 
+.flag.flag-km{background-position: 0 -2103px;} 
+.flag.flag-kn{background-position: 0 -2120px;} 
+.flag.flag-kp{background-position: 0 -2137px;} 
+.flag.flag-kr{background-position: 0 -2154px;} 
+.flag.flag-kw{background-position: 0 -2171px;} 
+.flag.flag-ky{background-position: 0 -2188px;} 
+.flag.flag-kz{background-position: 0 -2205px;} 
+.flag.flag-la{background-position: 0 -2222px;} 
+.flag.flag-lb{background-position: 0 -2239px;} 
+.flag.flag-lc{background-position: 0 -2256px;} 
+.flag.flag-li{background-position: 0 -2273px;} 
+.flag.flag-lk{background-position: 0 -2290px;} 
+.flag.flag-lr{background-position: 0 -2307px;} 
+.flag.flag-ls{background-position: 0 -2324px;} 
+.flag.flag-lt{background-position: 0 -2341px;} 
+.flag.flag-lu{background-position: 0 -2358px;} 
+.flag.flag-lv{background-position: 0 -2375px;} 
+.flag.flag-ly{background-position: 0 -2392px;} 
+.flag.flag-ma{background-position: 0 -2409px;} 
+.flag.flag-mc{background-position: 0 -2426px;} 
+.flag.flag-md{background-position: 0 -2443px;} 
+.flag.flag-me{background-position: 0 -2460px;} 
+.flag.flag-mg{background-position: 0 -2477px;} 
+.flag.flag-mh{background-position: 0 -2494px;} 
+.flag.flag-mk{background-position: 0 -2511px;} 
+.flag.flag-ml{background-position: 0 -2528px;} 
+.flag.flag-mm{background-position: 0 -2545px;} 
+.flag.flag-mn{background-position: 0 -2562px;} 
+.flag.flag-mo{background-position: 0 -2579px;} 
+.flag.flag-mp{background-position: 0 -2596px;} 
+.flag.flag-mq{background-position: 0 -2613px;} 
+.flag.flag-mr{background-position: 0 -2630px;} 
+.flag.flag-ms{background-position: 0 -2647px;} 
+.flag.flag-mt{background-position: 0 -2664px;} 
+.flag.flag-mu{background-position: 0 -2681px;} 
+.flag.flag-mv{background-position: 0 -2698px;} 
+.flag.flag-mw{background-position: 0 -2715px;} 
+.flag.flag-mx{background-position: 0 -2732px;} 
+.flag.flag-my{background-position: 0 -2749px;} 
+.flag.flag-mz{background-position: 0 -2766px;} 
+.flag.flag-na{background-position: 0 -2783px;} 
+.flag.flag-nc{background-position: 0 -2800px;} 
+.flag.flag-ne{background-position: 0 -2817px;} 
+.flag.flag-nf{background-position: 0 -2834px;} 
+.flag.flag-ng{background-position: 0 -2851px;} 
+.flag.flag-ni{background-position: 0 -2868px;} 
+.flag.flag-nl{background-position: 0 -2885px;} 
+.flag.flag-no{background-position: 0 -2902px;} 
+.flag.flag-np{background-position: 0 -2919px;} 
+.flag.flag-nr{background-position: 0 -2936px;} 
+.flag.flag-nt{background-position: 0 -2953px;} 
+.flag.flag-nu{background-position: 0 -2970px;} 
+.flag.flag-nz{background-position: 0 -2987px;} 
+.flag.flag-om{background-position: 0 -3004px;} 
+.flag.flag-pa{background-position: 0 -3021px;} 
+.flag.flag-pe{background-position: 0 -3038px;} 
+.flag.flag-pf{background-position: 0 -3055px;} 
+.flag.flag-pg{background-position: 0 -3072px;} 
+.flag.flag-ph{background-position: 0 -3089px;} 
+.flag.flag-pk{background-position: 0 -3106px;} 
+.flag.flag-pl{background-position: 0 -3123px;} 
+.flag.flag-pm{background-position: 0 -3140px;} 
+.flag.flag-pn{background-position: 0 -3157px;} 
+.flag.flag-pr{background-position: 0 -3174px;} 
+.flag.flag-ps{background-position: 0 -3191px;} 
+.flag.flag-pt{background-position: 0 -3208px;} 
+.flag.flag-pw{background-position: 0 -3225px;} 
+.flag.flag-py{background-position: 0 -3242px;} 
+.flag.flag-qa{background-position: 0 -3259px;} 
+.flag.flag-re{background-position: 0 -3276px;} 
+.flag.flag-ro{background-position: 0 -3293px;} 
+.flag.flag-rs{background-position: 0 -3310px;} 
+.flag.flag-ru{background-position: 0 -3327px;} 
+.flag.flag-rw{background-position: 0 -3344px;} 
+.flag.flag-sa{background-position: 0 -3361px;} 
+.flag.flag-sb{background-position: 0 -3378px;} 
+.flag.flag-sc{background-position: 0 -3395px;} 
+.flag.flag-sd{background-position: 0 -3412px;} 
+.flag.flag-se{background-position: 0 -3429px;} 
+.flag.flag-sg{background-position: 0 -3446px;} 
+.flag.flag-sh{background-position: 0 -3463px;} 
+.flag.flag-si{background-position: 0 -3480px;} 
+.flag.flag-sj{background-position: 0 -3497px;} 
+.flag.flag-sk{background-position: 0 -3514px;} 
+.flag.flag-sl{background-position: 0 -3531px;} 
+.flag.flag-sm{background-position: 0 -3548px;} 
+.flag.flag-sn{background-position: 0 -3565px;} 
+.flag.flag-so{background-position: 0 -3582px;} 
+.flag.flag-sr{background-position: 0 -3599px;} 
+.flag.flag-st{background-position: 0 -3616px;} 
+.flag.flag-sv{background-position: 0 -3633px;} 
+.flag.flag-sy{background-position: 0 -3650px;} 
+.flag.flag-sz{background-position: 0 -3667px;} 
+.flag.flag-tc{background-position: 0 -3684px;} 
+.flag.flag-td{background-position: 0 -3701px;} 
+.flag.flag-tf{background-position: 0 -3718px;} 
+.flag.flag-tg{background-position: 0 -3735px;} 
+.flag.flag-th{background-position: 0 -3752px;} 
+.flag.flag-tj{background-position: 0 -3769px;} 
+.flag.flag-tk{background-position: 0 -3786px;} 
+.flag.flag-tl{background-position: 0 -3803px;} 
+.flag.flag-tm{background-position: 0 -3820px;} 
+.flag.flag-tn{background-position: 0 -3837px;} 
+.flag.flag-to{background-position: 0 -3854px;} 
+.flag.flag-tp{background-position: 0 -3871px;} 
+.flag.flag-tr{background-position: 0 -3888px;} 
+.flag.flag-tt{background-position: 0 -3905px;} 
+.flag.flag-tv{background-position: 0 -3922px;} 
+.flag.flag-tw{background-position: 0 -3939px;} 
+.flag.flag-tz{background-position: 0 -3956px;} 
+.flag.flag-ua{background-position: 0 -3973px;} 
+.flag.flag-ug{background-position: 0 -3990px;} 
+.flag.flag-uk{background-position: 0 -4007px;} 
+.flag.flag-um{background-position: 0 -4024px;} 
+.flag.flag-us{background-position: 0 -4041px;} 
+.flag.flag-uy{background-position: 0 -4058px;} 
+.flag.flag-uz{background-position: 0 -4075px;} 
+.flag.flag-va{background-position: 0 -4092px;} 
+.flag.flag-vc{background-position: 0 -4109px;} 
+.flag.flag-ve{background-position: 0 -4126px;} 
+.flag.flag-vg{background-position: 0 -4143px;} 
+.flag.flag-vi{background-position: 0 -4160px;} 
+.flag.flag-vn{background-position: 0 -4177px;} 
+.flag.flag-vu{background-position: 0 -4194px;} 
+.flag.flag-wf{background-position: 0 -4211px;} 
+.flag.flag-ws{background-position: 0 -4228px;} 
+.flag.flag-ye{background-position: 0 -4245px;} 
+.flag.flag-yt{background-position: 0 -4262px;} 
+.flag.flag-yu{background-position: 0 -4279px;} 
+.flag.flag-za{background-position: 0 -4296px;} 
+.flag.flag-zm{background-position: 0 -4313px;} 
+.flag.flag-zr{background-position: 0 -4330px;} 
+.flag.flag-zw{background-position: 0 -4347px;} 

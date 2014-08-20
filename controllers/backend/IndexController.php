@@ -13,21 +13,34 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->tpl->assign('theInclude','dashboard');
 	}
 
+	function needsCSRF($data){
+		//check if the X-Requested-With header exists
+		if (array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')){
+			return false;
+		}
+		if($data['ajaxcalled'] && count($data)===1){
+			return false;
+		}
+		return true;
+	}
 
 	function preDispatch(){
 		if ($this->_request->isPost()) {
-			$data = $this->_request->getParams();
-			if($data['csrf']!=$_SESSION['Zend_Form_Element_Hash_salt_csrf']['hash']){
+			$data = $this->_request->getPost();
+			if($this->needsCSRF($data) && ($data['csrf']!=$_SESSION['Zend_Form_Element_Hash_salt_csrf']['hash'])){
 				echo "CSRF Forbidden";
 				exit;
+			}else{
+				unset($_POST['csrf']);
 			}
 		}
-		
+
 		$this->requirePriviledges();
-		if($this->config->site->help=='on'){
-			$this->getHelpDialogs();
-		}
+
+//		$_SESSION['ELFINDER_DROPBOX_CONSUMERKEY']= $this->config->social->dropboxkey;
+// 		$_SESSION['ELFINDER_DROPBOX_CONSUMERSECRET']= $this->config->social->dropboxsecret;
 		
+
 		/*
 		if(Zend_Registry::get('tplOverride')=='login'){
 		$this->_forward('login','index','default');
@@ -37,33 +50,54 @@ class Admin_IndexController extends Qool_Backend_Action{
 		*/
 	}
 
-	function getHelpDialogs(){
-		$data = $this->_request->getParams();
-		$dialogs = $this->loadHelp();
-		$this->toTpl('help',$dialogs);
+	function getCountMembers(){
+		$t = $this->getDbTables();
+		$last_check = ($_COOKIE['QOOL_MEMBERS_CHECK'])?$_COOKIE['QOOL_MEMBERS_CHECK']:0;
+		$last_check = date("Y-m-d H:i:s",$last_check);
+		//get new members
+		$r = $this->selectRow("SELECT COUNT(id) as counted FROM {$t['users']} WHERE `created`>'$last_check'");
+		$new = $r['counted'];
+		//get the total number of members
+		$r = $this->selectRow("SELECT COUNT(id) as counted FROM {$t['users']}");
+		$all = $r['counted'];
+		//SET THE COOKIE
+		setcookie('QOOL_MEMBERS_CHECK',time(), time()+60*60*24*30);
+		return array('new'=>$new,'all'=>$all);
 	}
-	
-	function loadHelp(){
-		$help['menu_new'] = array('title'=>$this->t('New content menu'),'content'=>$this->t('From here you can create new content. Each addon can add menu items here.'));
-		$help['menu_content'] = array('title'=>$this->t('Content menu'),'content'=>$this->t('Manage your content from this menu.'));
-		$help['menu_system'] = array('title'=>$this->t('System menu'),'content'=>$this->t('Manage system from here.'));
-		$help['search'] = array('title'=>$this->t('Search site'),'content'=>$this->t('You can search for content from this box.'));
-		$help['menu_module'] = array('title'=>$this->t('Module menu'),'content'=>$this->t('Specific module menu actions can be done with this menu'));
-		$help['profile'] = array('title'=>$this->t('User menu'),'content'=>$this->t('This menu allows you to view your profile and logout.'));
-		$help['side_content'] = array('title'=>$this->t('Content actions'),'content'=>$this->t('Create and list content by type'));
-		$help['side_addons'] = array('title'=>$this->t('Addon actions'),'content'=>$this->t('Specific addon actions are listed here by addon'));
-		$help['object_files'] = array('title'=>$this->t('Object Files'),'content'=>$this->t('Whenever you upload a file for an item it is displayed here.'));
-		return $help;
-	}
-	
+
 	function loadDashboard(){
 		$config = $this->config;
+		//load top boxes
+		$boxes = array();
+		//get total members
+		$boxes['membersbox'] = array(
+		'title'		=> $this->t('Members'),
+		'class'		=> 'icon32 icon-user icon-green',
+		'link'		=> 'users',
+		'string'	=> 'New Members',
+		'content'	=> $this->getCountMembers()
+		);
+		$usertasks = $this->getUserTasks();
+		$boxes['eventsbox'] = array(
+		'title'		=> $this->t('Events'),
+		'class'		=> 'icon32 icon-calendar icon-blue',
+		'link'		=> 'calendar',
+		'string'	=> 'New Events',
+		'content'	=> $this->getTodayTasks($usertasks)
+		);
+		//get sort cookie if exists
 
-		$widgets['system'][] = $this->consumeFeed($config->qool->newsfeed);
-		$widgets['system'][] = $this->getQoolInfo();
+		$widgets['system']['newsfeed'] = $this->consumeFeed($config->qool->newsfeed);
+		$widgets['system']['qoolinfo'] = $this->getQoolInfo();
+		$widgets['system']['system'] = $this->getSystemInfo();
+		
 		//we will show the user's shortcuts as a widget
-		$widgets['system'][] = array('title'=>$this->t('Shortcuts'),'content'=>$this->linksToList($this->getUserShortcuts()));
-		$widgets['system'][] = array('title'=>$this->t('Tasks'),'content'=>$this->tasksToList($this->getUserTasks()));
+		if($this->getUserShortcuts()){
+			$widgets['system']['shortcuts'] = array('title'=>$this->t('Shortcuts'),'content'=>$this->linksToList($this->getUserShortcuts()));
+		}
+		if($this->getUserTasks()){
+			$widgets['system']['tasks'] = array('title'=>$this->t('Tasks'),'content'=>$this->tasksToList($usertasks));
+		}
 		$widgets['feeds'] = array();
 		//we will allow the user to add more feeds
 		foreach ($this->getUserFeeds() as $k=>$v){
@@ -74,10 +108,65 @@ class Admin_IndexController extends Qool_Backend_Action{
 		}
 
 		//d($widgets);
-		$this->doQoolHook('pre_boardwidgets_assign_tpl');
+		$widgets = $this->doQoolHook('pre_boardwidgets_assign_tpl',$widgets);
+		$boxes = $this->doQoolHook('pre_boardboxes_assign_tpl',$boxes);
+		foreach ($widgets as $k=>$v){
+			$widgets[$k] = $this->sortWidgets($k,$v);
+		}
+
 		$this->toTpl('boardwidgets',$widgets);
+		$boxes = $this->sortBoxes($boxes);
+		$this->toTpl('boardboxes',$boxes);
+	}
+	
+	function getTodayTasks($tasks){
+		$count = 0;
+		
+		foreach ($tasks as $k=>$v){
+			//convert to timestamp
+			$date = strtotime($v['datestart']);
+			//then to string
+			$date = date("Y-m-d",$date);
+			if($date==date("Y-m-d",time())){
+				$count++;
+			}
+		}
+		return array('new'=>$count,'all'=>count($tasks));
 	}
 
+	function sortWidgets($type,$widgets){
+		if($_COOKIE['box_order_'.$type]){
+			$order = explode(",",$_COOKIE['box_order_'.$type]);
+			$ordered = array();
+			foreach ($order as $k=>$v){
+				$v = explode("_",$v);
+				if($widgets[$v[1]]){
+					$ordered[$v[1]] = $widgets[$v[1]];
+				}
+			}
+		}else{
+			$ordered = $widgets;
+		}
+		
+		return $ordered;
+	}
+
+	function sortBoxes($boxes){
+		
+		if($_COOKIE['box_order']){
+			$order = explode(",",$_COOKIE['box_order']);
+			$ordered = array();
+			foreach ($order as $k=>$v){
+				if($boxes[$v]){
+					$ordered[$v] = $boxes[$v];
+				}
+			}
+		}else{
+			$ordered = $boxes;
+		}
+			
+		return $ordered;
+	}
 
 	function tasksToList($links){
 
@@ -86,7 +175,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			if($v['target']==1){
 				$target = 'target="_blank"';
 			}
-			$content .= " <li><a data-original-title='Task Contents' data-content='{$v['task']}' class='inline-block poptop' href='#'><i class='{$v['icon']}'> </i> {$v['title']}</a><a href='#' class='ajaxdelete pull-right inline-block-small alert-error' title='".$this->t("Delete")."' id='{$v['id']}' rev='general_data'>&times;</a></li>";
+			$content .= " <li><a data-original-title='Task Contents' data-content='{$v['task']}' class='inline-block poptop' href='calendar'><i class='{$v['icon']}'> </i><span class='label label-info'>{$v['datestart']}:</span> {$v['title']}</a><a href='#' class='btn ajaxdelete btn-danger btn-closesmall btn-round pull-right' title='".$this->t("Delete")."' id='{$v['id']}' rev='general_data'><i class='icon-remove icon-white'></i></a></li><li class='divider'></li>";
 		}
 		$content .= '</ul>';
 		return $content;
@@ -99,7 +188,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			if($v['target']==1){
 				$target = 'target="_blank"';
 			}
-			$content .= " <li><a class='inline-block' $target href='{$v['link']}'><i class='{$v['icon']}'> </i> {$v['title']}</a><a href='#' class='ajaxdelete pull-right inline-block-small alert-error' title='".$this->t("Delete")."' id='{$v['id']}' rev='general_data'>&times;</a></li>";
+			$content .= " <li><a class='inline-block' $target href='{$v['link']}'><i class='{$v['icon']}'> </i> {$v['title']}</a><a href='#' class='btn ajaxdelete btn-danger btn-closesmall btn-round pull-right' title='".$this->t("Delete")."' id='{$v['id']}' rev='general_data'><i class='icon-remove icon-white'></i></a></li><li class='divider'>&nbsp;</li>";
 		}
 		$content .= '</ul>';
 		return $content;
@@ -123,6 +212,21 @@ class Admin_IndexController extends Qool_Backend_Action{
 	function getUserTasks(){
 		$t = $this->getDbTables();
 		$sql = "SELECT * FROM {$t['general_data']} WHERE data_type='tasks'";
+		$r = $this->selectAll($sql);
+		foreach ($r as $k=>$v){
+			$id = $v['id'];
+			$v = unserialize($v['data_value']);
+			if($v['username']==$_SESSION['user']['username']){
+				$v['id'] = $id;
+				$feeds[] = $v;
+			}
+		}
+		return $feeds;
+	}
+	
+	function getUserCalendars(){
+		$t = $this->getDbTables();
+		$sql = "SELECT * FROM {$t['general_data']} WHERE data_type='googlecalendar'";
 		$r = $this->selectAll($sql);
 		foreach ($r as $k=>$v){
 			$id = $v['id'];
@@ -176,9 +280,34 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$config = $this->config;
 		$info = $config->qool->toArray();
 		$widget['title'] = $this->t('Qool CMS Information');
-		$widget['content'] = "Codename: {$info['codename']}<br/>Version: {$info['version']}";
+		$widget['content'] = "<strong>Local ({$_SESSION['SITE_URL']}):</strong><br/>Codename: {$info['codename']}<br/>Version: {$info['version']}";
+		$widget['content'] .= "<br/><strong>Current (http://www.qool.gr):</strong><br/>";
+		$widget['content'] .= "<script>var updatesSource=new EventSource('http://www.qool.gr/getupdates');  
+		updatesSource.onmessage=function(event){
+    	document.getElementById('updatesMessages').innerHTML=event.data;
+    	};</script><div id='updatesMessages'></div>";
 		return $widget;
 	}
+	
+	function getSystemInfo(){
+		$widget['title'] = $this->t('System Information');
+		$widget['content'] = "<script>var msgSource=new EventSource('getsystemmessages');  
+		msgSource.onmessage=function(event){
+    	document.getElementById('acceptMessages').innerHTML=event.data;
+    	};</script><div id='acceptMessages'></div>";
+		return $widget;
+	}
+	
+	
+	
+	public function getsystemmessagesAction(){
+		$message = $this->memoryGetUsage();
+		//$message .= 
+		$this->serverSendMessage($message);
+		
+	}
+	
+	
 
 	public function loginAction(){
 		$data = $this->_request->getParams();
@@ -315,9 +444,10 @@ class Admin_IndexController extends Qool_Backend_Action{
 
 	function addCSRF($form){
 		$form->addElement('hash', 'csrf', array(
-            'ignore' => true,
-        ));
-        return $form;
+		'ignore' => true,
+		'timeout'=> 900
+		));
+		return $form;
 	}
 
 	public function uploadlangAction(){
@@ -327,11 +457,11 @@ class Admin_IndexController extends Qool_Backend_Action{
 		Zend_Registry::set('module','Languages');
 		$form = new Zend_Form;
 		$form = $this->addCSRF($form);
-		
+
 		$form->setView($this->tpl);
 		$form->setAttrib('class', 'form');
 		$form->removeDecorator('dl');
-		
+
 		$form->setAction($this->config->host->folder.'/admin/uploadlangfile')->setMethod('post');
 		$upload = new Zend_Form_Element_File('langzip');
 		$upload->setLabel($this->t("Choose a language file in .zip format"));
@@ -344,6 +474,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$form->addElement($submit);
 		$this->toTpl('formTitle',$this->t("Upload a new language"));
 		$this->toTpl('theForm',$form);
+		
 	}
 
 	public function uploadlangfileAction(){
@@ -940,6 +1071,8 @@ class Admin_IndexController extends Qool_Backend_Action{
 			unset($data['module']);
 			unset($data['controller']);
 			unset($data['save']);
+			//serialize the ping services
+			$data['ping'] = serialize($data['ping']);
 			//create the index for this type
 			$this->addIndex($data);
 			$this->save($t['content_types'],$data);
@@ -960,6 +1093,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			unset($data['save']);
 			$tid = $data['tid'];
 			unset($data['tid']);
+			$data['ping'] = serialize($data['ping']);
 			$this->update($t['content_types'],$data,$tid);
 			$params = array("message"=>$this->t("Content Type Updated"),"msgtype"=>'success');
 			$this->addMessage($params);
@@ -1107,6 +1241,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$form->addElement($this->getFormElement(array("name"=>'mime',"value"=>'selectbox',"title"=>$this->t("Mime"),'use_pool'=>'getMimeTypes')));
 		$form->addElement($this->getFormElement(array("name"=>'lib',"value"=>'selectbox',"title"=>$this->t("Lib"),'use_pool'=>'getLibraries')));
 		$form->addElement($this->getFormElement(array("name"=>'headers',"value"=>'selectbox',"title"=>$this->t("Headers"),'use_pool'=>'getHeaderTypes')));
+		$form->addElement($this->getFormElement(array("name"=>'ping',"value"=>'multiselectbox',"title"=>$this->t("Ping Services"),'use_pool'=>'getPingServices')));
 
 		$form->addElement('hidden',	'dummy',array('required' => false,'ignore' => true,'autoInsertNotEmptyValidator' => false,'decorators' => array(array('HtmlTag', array('tag'  => 'hr','id'   => 'wmd-button-bar','class' => 'divider')))));
 		$form->dummy->clearValidators();
@@ -1126,6 +1261,8 @@ class Admin_IndexController extends Qool_Backend_Action{
 	}
 
 	public function edittypeAction(){
+
+		ini_set("display_errors",1);
 		$this->toTpl('theInclude','form');
 		Zend_Registry::set('module','Edit Content Type');
 		$data = $this->_request->getParams();
@@ -1138,11 +1275,15 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$addon = new Zend_Form_Element_Hidden('tid');
 		$addon->setValue($data['id']);
 		$form->addElement($addon);
+		foreach ($type['ping'] as $k=>$v){
+			$type['ping'][$k] = array('selected_value'=>$v);
+		}
 		$form->setAction($this->config->host->folder.'/admin/savetype')->setMethod('post');
 		$form->addElement($this->getFormElement(array("name"=>'title',"value"=>'textinput',"title"=>$this->t("Title")),$type['title']));
 		$form->addElement($this->getFormElement(array("name"=>'mime',"value"=>'selectbox',"title"=>$this->t("Mime"),'use_pool'=>'getMimeTypes'),$type['mime']));
 		$form->addElement($this->getFormElement(array("name"=>'lib',"value"=>'selectbox',"title"=>$this->t("Lib"),'use_pool'=>'getLibraries'),$type['lib']));
 		$form->addElement($this->getFormElement(array("name"=>'headers',"value"=>'selectbox',"title"=>$this->t("Headers"),'use_pool'=>'getHeaderTypes'),$type['headers']));
+		$form->addElement($this->getFormElement(array("name"=>'ping',"value"=>'multiselectbox',"title"=>$this->t("Ping Services"),'use_pool'=>'getPingServices'),$type['ping']));
 
 		$form->addElement('hidden',	'dummy',array('required' => false,'ignore' => true,'autoInsertNotEmptyValidator' => false,'decorators' => array(array('HtmlTag', array('tag'  => 'hr','id'   => 'wmd-button-bar','class' => 'divider')))));
 		$form->dummy->clearValidators();
@@ -1193,32 +1334,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('theList',$r);
 	}
 
-	function uploadGeneral($action,$id=false){
-		$dirs = $this->dirs;
-		$form = new Zend_Form;
-		$form = $this->addCSRF($form);
-		$form->setView($this->tpl);
-		if ($this->_request->isPost()) {
-			$formData = $this->_request->getPost();
-			if ($form->isValid($formData)) {
-				$upload = new Zend_File_Transfer_Adapter_Http();
-				$this->createPath(APPL_PATH.$dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d"));
-				$upload->setDestination(APPL_PATH.$dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d").DIR_SEP);
-				try {
-					$upload->receive();
-					return $dirs['structure']['uploads'].DIR_SEP.date("Y").DIR_SEP.date("m").DIR_SEP.date("d").DIR_SEP;
-				} catch (Zend_File_Transfer_Exception $e) {
-					if($id){
-						$params = array("message"=>$e->getMessage(),"msgtype"=>'error');
-					}else{
-						$params = array("message"=>$e->getMessage(),"msgtype"=>'error');
-					}
-					$this->addMessage($params);
-					$this->_helper->redirector($action, 'index','admin',array('id'=>$id));
-				}
-			}
-		}
-	}
+	
 
 
 	public function editcontentAction(){
@@ -1266,7 +1382,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 				$r = $this->selectRow($sql);
 				$form->addElement($this->getFormElement($v,$r['slug']));
 			}else{
-				if($v['value']=='multifileinput' || $v['value']=='multifileinputs' || $v['value']=='fileinput'){
+				if($v['value']=='multifileinput' || $v['value']=='multifileinputs' || $v['value']=='fileinput' || $v['value']=='dropboxchooser'){
 					$sql = "SELECT * FROM {$t['object_data']} WHERE `object_id`=".$data['id']." AND `name`=".$this->quote($v['name']);
 					$files[$v['name']] = $this->selectAll($sql);
 					$r = array('value');
@@ -1368,7 +1484,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 	public function buildLoginForm(){
 		try {
 			$form = new Zend_Form;
-		$form = $this->addCSRF($form);
+			$form = $this->addCSRF($form);
 			$form->setView($this->tpl);
 			$form->setAttrib('class', 'form-inline');
 			$form->removeDecorator('dl');
@@ -2196,7 +2312,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$form->addElement($this->getFormElement(array('name'=>'recaptcha_priv','value'=>'textinput','title'=>$this->t('ReCaptcha Private Key'),'attributes'=>array('placeholder'=>$this->t("If ReCaptcha chosen"))),$xml->site->recaptcha_priv));
 		$form->addElement($this->getFormElement(array('name'=>'help','value'=>'selectbox','title'=>$this->t('Help mode'),'use_pool'=>array(array('id'=>'on','title'=>$this->t('On')),array('id'=>'off','title'=>$this->t('Off')))),$xml->site->help));
 		$form->addElement($this->getFormElement(array('name'=>'default','value'=>'selectbox','title'=>$this->t('Front Page'),'use_pool'=>'getApplications'),$xml->site->default));
-		
+
 		$form->addElement('hidden','dummy',array('required' => false,'ignore' => true,'autoInsertNotEmptyValidator' => false,'decorators' => array(array('HtmlTag', array('tag'  => 'hr','id'   => 'wmd-button-bar','class' => 'divider editor')))));
 		$form->dummy->clearValidators();
 		$submit = new Zend_Form_Element_Submit('save');
@@ -2228,7 +2344,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			$xml->site->recaptcha_priv = $data['recaptcha_priv'];
 			$xml->site->help = $data['help'];
 			$xml->site->default = $data['default'];
-			
+
 			$xml = $this->doQoolHook('post_edit_site_xml_data',$xml);
 		}
 		$xml->asXML(APPL_PATH.'config/config.xml');
@@ -2283,24 +2399,81 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->addMessage($params);
 		$this->_helper->redirector('cache', 'index','admin');
 	}
+	
+	public function socialAction(){
+		$this->addToBreadcrumb(array('social',$this->t('Social Settings')));
+		$this->totpl('theInclude','form');
+		Zend_Registry::set('module','Social Settings');
+		$xml = readLangFile(APPL_PATH.'config/config.xml');
+
+		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
+		$form->setView($this->tpl);
+		$form->setAttrib('class', 'form');
+		$form->removeDecorator('dl');
+		$form->setAction($this->config->host->folder.'/admin/savesocial')->setMethod('post');
+		$form->addElement($this->getFormElement(array('name'=>'twitterusername','value'=>'textinput','title'=>$this->t('Twitter Username')),$xml->social->twitterusername));
+		$form->addElement($this->getFormElement(array('name'=>'fbusername','value'=>'textinput','title'=>$this->t('Facebook Username')),$xml->social->fbusername));
+		$form->addElement($this->getFormElement(array('name'=>'googleusername','value'=>'textinput','title'=>$this->t('Google Username')),$xml->social->googleusername));
+		$form->addElement($this->getFormElement(array('name'=>'googleplus','value'=>'textinput','title'=>$this->t('Google+ Page')),$xml->social->googleplus));
+		$form->addElement($this->getFormElement(array('name'=>'fbpage','value'=>'textinput','title'=>$this->t('Facebook Page')),$xml->social->fbpage));
+		$form->addElement($this->getFormElement(array('name'=>'dropboxchooser','value'=>'textinput','title'=>$this->t('DropBox Chooser')),$xml->social->dropboxchooser));
+		$form->addElement($this->getFormElement(array('name'=>'dropboxkey','value'=>'textinput','title'=>$this->t('DropBox API Key')),$xml->social->dropboxkey));
+		$form->addElement($this->getFormElement(array('name'=>'dropboxsecret','value'=>'textinput','title'=>$this->t('DropBox Secret')),$xml->social->dropboxsecret));
+		$form->addElement($this->getFormElement(array('name'=>'hasdropbox','value'=>'selectbox','title'=>$this->t('Activate Dropbox'),'use_pool'=>array(array('id'=>'on','title'=>$this->t('On')),array('id'=>'off','title'=>$this->t('Off')))),$xml->social->hasdropbox));
+
+		$form->addElement('hidden','dummy',array('required' => false,'ignore' => true,'autoInsertNotEmptyValidator' => false,'decorators' => array(array('HtmlTag', array('tag'  => 'hr','id'   => 'wmd-button-bar','class' => 'divider')))));
+		$form->dummy->clearValidators();
+		$submit = new Zend_Form_Element_Submit('save');
+		$submit->setAttrib('class','btn btn-primary');
+		$submit->setDecorators(array("ViewHelper"));
+		$submit->setLabel($this->t("Save"));
+		$form->addElement($submit);
+		$form = $this->doQoolHook('post_get_socialsettings_edit_form',$form);
+		$this->toTpl('formTitle',$this->t("Social Settings"));
+		$this->toTpl('theForm',$form);
+	}
+	
+	public function savesocialAction(){
+		$dirs = $this->dirs;
+		$data = $this->_request->getParams();
+		$data = $this->doQoolHook('pre_savesocial_post_data',$data);
+		if ($this->_request->isPost()) {
+			$xml = readLangFile(APPL_PATH.'config/config.xml');
+			$xml->social->twitterusername = $data['twitterusername'];
+			$xml->social->fbusername = $data['fbusername'];
+			$xml->social->googleusername = $data['googleusername'];
+			$xml->social->googleplus = $data['googleplus'];
+			$xml->social->fbpage = $data['fbpage'];
+			$xml->social->dropboxchooser = $data['dropboxchooser'];
+			$xml->social->dropboxkey = $data['dropboxkey'];
+			$xml->social->dropboxsecret = $data['dropboxsecret'];
+			$xml->social->hasdropbox = $data['hasdropbox'];
+			$xml = $this->doQoolHook('post_edit_social_xml_data',$xml);
+		}
+		$xml->asXML(APPL_PATH.'config/config.xml');
+		$params = array("message"=>$this->t("Social Settings saved"),"msgtype"=>'success');
+		$this->addMessage($params);
+		$this->_helper->redirector('social', 'index','admin');
+	}
 
 	public function themeAction(){
-			$this->addToBreadcrumb(array('theme',$this->t('Theme Settings')));
-			$this->tpl->assign('theInclude','themelist');
-			Zend_Registry::set('module','Themes');
-			$dirs = $this->dirs;
-			//create the module menu
-			$menu = array(
-			'uploadtheme'	=>	'Upload new theme',
-			'widgetslots'	=>	'Widgets'
-			);
-			$menu = $this->doQoolHook('themeaction_menu',$menu);
-			$this->totpl('moduleMenu',$menu);
-			$themes = readLangFile(APPL_PATH.'config/config.xml');
-			$this->toTpl('default',$themes->template->frontend->title);
-			$themes = $this->jsonArray($themes->template->frontend->available);
+		$this->addToBreadcrumb(array('theme',$this->t('Theme Settings')));
+		$this->tpl->assign('theInclude','themelist');
+		Zend_Registry::set('module','Themes');
+		$dirs = $this->dirs;
+		//create the module menu
+		$menu = array(
+		'uploadtheme'	=>	'Upload new theme',
+		'widgetslots'	=>	'Widgets'
+		);
+		$menu = $this->doQoolHook('themeaction_menu',$menu);
+		$this->totpl('moduleMenu',$menu);
+		$themes = readLangFile(APPL_PATH.'config/config.xml');
+		$this->toTpl('default',$themes->template->frontend->title);
+		$themes = $this->jsonArray($themes->template->frontend->available);
 
-			$this->toTpl('theList',$themes);
+		$this->toTpl('theList',$themes);
 	}
 
 	public function themeinfoAction(){
@@ -2616,7 +2789,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		foreach ($slots->slot as $k=>$v){
 			$vo = $this->jsonArray($v);
 
-			$slotlist[] = array('id'=>$vo['@attributes']['name'],'title'=>$vo['@attributes']['title'],'widget'=>$vo[0]);
+			$slotlist[] = array('id'=>$vo['@attributes']['name'],'title'=>$vo['@attributes']['title'],'widget'=>$v);
 
 		}
 		$slotlist = $this->doQoolHook('widgets_template_slotlist_creation',$slotlist);
@@ -2630,8 +2803,8 @@ class Admin_IndexController extends Qool_Backend_Action{
 				$xmladdon = readLangFile(APPL_PATH.$dirs['structure']['addons'].DIR_SEP.$v['@attributes']['name'].DIR_SEP."addon.xml");
 				$addon = $xmladdon->templates->slots;
 				foreach ($addon->slot as $a=>$b){
-					$b = $this->jsonArray($b);
-					$slotlist[] = array('id'=>$v['@attributes']['name'].'-'.$b['@attributes']['name'],'title'=>$v['@attributes']['name'].' '.$b['@attributes']['title'],'widget'=>$b[0]);
+					//$b = $this->jsonArray($b);
+					$slotlist[] = array('id'=>$v['@attributes']['name'].'-'.$b['@attributes']['name'],'title'=>$v['@attributes']['name'].' '.$b['@attributes']['title'],'widget'=>$b);
 				}
 			}
 		}
@@ -2670,15 +2843,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$this->toTpl('theList',$taxonomies);
 	}
 
-	function getPreviousTaxonomies($id,$array=false){
-		$prev = $this->getTaxonomy($id);
-		$array[] = $prev;
-		if($prev['parent']==0){
-			return array_reverse($array);
-		}else{
-			return $this->getPreviousTaxonomies($prev['parent'],$array);
-		}
-	}
+	
 
 	public function newtaxonomyAction(){
 		$this->totpl('theInclude','form');
@@ -2956,9 +3121,9 @@ class Admin_IndexController extends Qool_Backend_Action{
 
 	public function adduserAction(){
 		if ($this->_request->isPost()) {
-			
+
 			$data = $this->_request->getParams();
-			
+
 			$data = $this->cleanPost($data);
 			$t = $this->getDbTables();
 			//create the user
@@ -3291,7 +3456,7 @@ class Admin_IndexController extends Qool_Backend_Action{
 			}
 		}else{
 			$form = new Zend_Form;
-		$form = $this->addCSRF($form);
+			$form = $this->addCSRF($form);
 			$form->setView($this->tpl);
 			$form->setAttrib('class', 'form');
 			$form->removeDecorator('dl');
@@ -3576,6 +3741,8 @@ class Admin_IndexController extends Qool_Backend_Action{
 		$form->removeDecorator('dl');
 		$form->setAction($this->config->host->folder.'/admin/addgeneraldata')->setMethod('post');
 		$form->addElement($this->getFormElement(array("name"=>'title',"value"=>'textinput',"title"=>$this->t("Title"),'attributes'=>array('placeholder'=>$this->t('Task Title')))));
+		$form->addElement($this->getFormElement(array("name"=>'datestart',"value"=>'datepicker',"title"=>$this->t("Starting Date"))));
+		$form->addElement($this->getFormElement(array("name"=>'dateend',"value"=>'datepicker',"title"=>$this->t("End Date"))));
 		$form->addElement($this->getFormElement(array("name"=>'task',"value"=>'textarea',"title"=>$this->t("Content"),'attributes'=>array('placeholder'=>$this->t('Task Contents'),'class'=>'span5'))));
 
 		$form->addElement($this->getFormElement(array("name"=>'data_type',"value"=>'hidden'),'tasks'));
@@ -3872,11 +4039,136 @@ class Admin_IndexController extends Qool_Backend_Action{
 		die();
 	}
 
+	public function gallerysettingsAction(){
+		$this->totpl('theInclude','general');
+		Zend_Registry::set('module','Gallery Settings');
+		$resizeto = ($_COOKIE['QOOL_GALLERY_RESIZE_TO'])?$_COOKIE['QOOL_GALLERY_RESIZE_TO']:0;
+		?>
+		<div class="well">
+			<div class="controls">
+			  <div class="input-prepend input-append">
+				<span class="add-on"><?php $this->t('Resize images to',1)?></span><input class="span1" type="text" size="4" id="resizeto" value="<?php echo $resizeto?>"><span class="add-on">px</span><span class="help-inline"><?php $this->t("For no resizing set it to zero",1)?></span>
+			  </div>
+			</div>
+		</div>
+		<?php
+		die();
+
+	}
+
 	public function filemanagerAction(){
 		$this->totpl('theInclude','filemanager');
 		$this->addToBreadcrumb(array('filemanager',$this->t('File Manager')));
 		Zend_Registry::set('module','Filemanager');
 		$this->toTpl('elfinder',true);
+	}
+
+	public function galleryAction(){
+		$this->totpl('theInclude','gallery');
+		$this->addToBreadcrumb(array('gallery',$this->t('Image Gallery')));
+		$images = $this->getImagesUploaded();
+//				d($images);
+		$this->toTpl('galleryimages',$images);
+	}
+
+	public function gallerydeleteAction(){
+		if ($this->_request->isPost()) {
+			$data = $this->_request->getPost();
+			$file = rawurldecode($data['deleteId']);
+			//remove double slashes
+			$file = str_replace("//",'/',$file);
+
+			if(file_exists($file)){
+				unlink($file);
+				$this->t("Deleted with no errors",1);
+				die();
+			}
+		}
+		echo $this->t("Not valid request!");
+		die();
+	}
+
+	public function galleryeditAction(){
+		if ($this->_request->isPost()) {
+			$data = $this->_request->getPost();
+			if($data['image']){
+				$config = $this->config;
+				$host = $config->host->http.$config->host->subdomain.$config->host->domain.$config->host->folder.DIR_SEP;
+				$img = rawurldecode($data['image']);
+				$img = str_replace("//",'/',$img);
+				$image_info = getimagesize($img,$fileinfo);
+
+				$img = str_replace(APPL_PATH,$host,$img);
+				$this->loadImgEditor($img,$image_info,$fileinfo);
+				die();
+			}
+		}
+		echo $this->t("Not valid request!");
+		die();
+	}
+
+	public function gallerysaveimageAction(){
+		if ($this->_request->isPost()) {
+			$data = $this->_request->getPost();
+			//save the image in the uploads dir
+			$file = $data['file'];
+			$filename = $data['name'];
+			$this->createFile($file,$filename);
+			die();
+		}
+		echo $this->t("Not valid request!");
+		die();
+	}
+
+	public function calendarAction(){
+		$this->totpl('theInclude','calendar');
+		$this->addToBreadcrumb(array('calendar',$this->t('Calendar')));
+		$tasks = $this->getUserTasks();
+		$cals = $this->getUserCalendars();
+		if(count($cals)>0){
+			$this->toTpl('hasGoogleCal',true);
+			$this->toTpl('googleCalendars',$cals);
+		}
+		$this->toTpl('calendar',1);
+		$this->toTpl('tasks',$tasks);
+	}
+	
+	public function addcalendarAction(){
+		$this->totpl('theInclude','general');
+		Zend_Registry::set('module','Add Google Calendar');
+		$data = $this->_request->getParams();
+
+		$form = new Zend_Form;
+		$form = $this->addCSRF($form);
+		$form->setView($this->tpl);
+		$form->setAttrib('class', 'form');
+		$form->removeDecorator('dl');
+		$form->setAction($this->config->host->folder.'/admin/addgeneraldata')->setMethod('post');
+		$form->addElement($this->getFormElement(array("name"=>'calendar_title',"value"=>'textinput',"title"=>$this->t("Calendar Name"),'attributes'=>array('placeholder'=>$this->t('Calendar Name')))));
+		$form->addElement($this->getFormElement(array("name"=>'calendar_address',"value"=>'textinput',"title"=>$this->t("Calendar URL"),'attributes'=>array('placeholder'=>$this->t('Calendar URL')))));
+		$form->addElement($this->getFormElement(array("name"=>'calendar_class',"value"=>'textinput',"title"=>$this->t("CSS Class"),'attributes'=>array('placeholder'=>$this->t('CSS Class')))));
+		$form->addElement($this->getFormElement(array("name"=>'is_editable',"value"=>'checkbox',"title"=>$this->t("Allow Edit")),false));
+
+		$form->addElement($this->getFormElement(array("name"=>'data_type',"value"=>'hidden'),'googlecalendar'));
+		$form->addElement('hidden','dummy',array('required' => false,'ignore' => true,'autoInsertNotEmptyValidator' => false,'decorators' => array(array('HtmlTag', array('tag'  => 'hr','id'   => 'wmd-button-bar','class' => 'divider')))));
+		$form->dummy->clearValidators();
+		$submit = new Zend_Form_Element_Submit('save');
+		$submit->setAttrib('class','btn btn-primary');
+		$submit->setDecorators(array("ViewHelper"));
+		$submit->setLabel($this->t("Save"));
+		$form->addElement($submit);
+		if($data['ajaxcalled']){
+
+			echo $form;
+			echo "<span class='label'>".$this->t('Use for CSS Class:')."</span> ";
+			echo "<span class='label label-info'>info</span> ";
+			echo "<span class='label label-success'>success</span> ";
+			echo "<span class='label label-warning'>warning</span> ";
+			echo "<span class='label label-important'>important</span> ";
+			echo "<span class='label label-inverse'>inverse</span> ";
+			die();
+		}
+		$this->totpl('html',$form);
 	}
 
 }

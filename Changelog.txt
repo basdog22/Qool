@@ -1,0 +1,33 @@
+Changelog
+
+v2.1
+
+- Added audit trail
+- New hookable Tool buttons on footer of dashboard
+- WordPress Importer
+- minor bug fixes
+
+v2.0 Final
+
+- Fixed CSRF security issue 
+- New backend template based on Charisma theme by http://usman.it/themes/charisma/
+- Added HTML5 notifications support (Chrome + Safari + Opera. Firefox will implement it on version 22)
+- Added Image gallery with image editor
+- Added Calendar application with support for Google Calendars importing
+- Support for Server Sent Events (SSE)
+- Drag n Drop reordering of backend widgets
+- Filemanager had some issues that are now fixed
+- Added support for pings. Now you can set which content type will ping which service uppon creation
+- Datatables support
+- Added simple jQuery RTE in the datafields section
+- Added Date Picker field in the datafields section
+- Added Dropbox picker field in the datafields section
+- Tasks are now displayed in the calendar application
+- Added help tour for the new dashboard
+- Ability to select default controller
+- Social settings section
+- Fixed editor for inserting images
+- Added Picasa support for tinymce
+- TinyMCE buttons reordered for better user experience
+- Added basket.js for js loading. Now js loads in localstorage
+- Added live messages from Qool CMS official site to all Qool installations.

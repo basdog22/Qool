@@ -1,3 +1,25 @@
+<!-- Banner -->
+<div class="row">
+	<div class="10u">
+		
+		 <div id="wrapper">
+			 <div class="slider-wrapper theme-default">
+				<div id="banner">
+					<?php $banners = get_random('Banner',5); foreach ($banners as $banner):?>
+					<a href="<?php echo $banner['url']?>"><img src="<?php qoolinfo('home')?>/<?php echo $banner['image']?>" title=" <?php echo $banner['alt']?>" alt="" /></a>
+					<?php endforeach;?>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="2u">
+		<section>
+		<?php widget('right_main_top')?>
+		</section>
+	</div>
+</div>
+<!---->
 <!-- Features -->
 
 <div class="row">

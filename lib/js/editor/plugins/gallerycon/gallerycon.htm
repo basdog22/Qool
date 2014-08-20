@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{#gallerycon_dlg.dialog_title}</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="../../utils/mctabs.js"></script>
+	<!--script type="text/javascript" src="../../utils/form_utils.js"></script-->
+	<!--script type="text/javascript" src="../../utils/validate.js"></script-->
+	<script type="text/javascript" src="js/gallerycon.js"></script>
+	<link href="css/gallerycon.css" rel="stylesheet" type="text/css" />
+	<base target="_self" />
+</head>
+<body id="GalleryCon" style="display: none">
+	<form onsubmit="GalleryConDialog.insert();return false;" action="#"> 
+		<div class="panel_wrapper">
+			<div id="select_panel" class="panel current">
+				<div id="image-browser">
+					<div id="ib-galleries-box"><div id="ib-galleries"></div></div>
+					<div id="ib-images"></div>
+				</div>
+			</div>
+			<div id="look_panel" class="panel">
+				<div id="image-look">
+					<div id="il-thumb"></div>
+					<div id="il-title-box"><strong>{#gallerycon_dlg.h_title}:&nbsp;&nbsp;</strong><span id="il-title"></span></div>
+					<div id="il-desc-box"><strong>{#gallerycon_dlg.h_description}:&nbsp;&nbsp;</strong><span id="il-desc"></div>
+					<div id="il-alignment">
+						<h3>{#gallerycon_dlg.h_alignment}</h3>
+						<div id="il-alignment-left" class="il-align-type il-at-selected">
+							<img src="img/photo.gif" />
+							<input type="hidden" name="alignment" class="il-class-name" value="left" />
+							Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+						</div>
+						<div id="il-alignment-right" class="il-align-type">
+							<img src="img/photo.gif" />
+							<input type="hidden" name="alignment" class="il-class-name" value="right" />
+							Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+						</div>
+						<div id="il-alignment-baseline" class="il-align-type">
+							<img src="img/photo.gif" />
+							<input type="hidden" name="alignment" class="il-class-name" value="baseline" />
+							Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+						</div>
+						<div id="il-alignment-middle" class="il-align-type">
+							<img src="img/photo.gif" />
+							<input type="hidden" name="alignment" class="il-class-name" value="middle" />
+							Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+						</div>
+						<div id="il-alignment-top" class="il-align-type">
+							<img src="img/photo.gif" />
+							<input type="hidden" name="alignment" class="il-class-name" value="top" />
+							Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Loreum ipsum edipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+						</div>
+					</div>
+					<div id="il-size">
+						<h3>{#gallerycon_dlg.h_size}</h3>
+					</div>
+					<div class="backbutton">
+						<a href="#" onclick="$('#insert').css('display', 'none'); mcTabs.displayTab('general_tab','select_panel'); return false;">&larr; {#gallerycon_dlg.back_to_gallery}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mceActionPanel">
+			<div style="float: left">
+				<input type="button" style="display: none;" onclick="GalleryConDialog.insert();" id="insert" name="insert" value="{#insert}" />
+			</div>
+
+			<div style="float: right">
+				<input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" />
+			</div>
+		</div>
+	</form>
+</body>
+</html>

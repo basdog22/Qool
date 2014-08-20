@@ -10,9 +10,32 @@ function arcana_css(){
 	<?php else:?>
 	<?php themecss();?>
 	<?php endif;?>
+	<link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/themes/default/default.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/themes/light/light.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/themes/dark/dark.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/themes/bar/bar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/nivo-slider.css" type="text/css" media="screen" />
+	<?php google_jqueryui();?>
 	<!--[if IE 9]>
 	<link rel="stylesheet" href="<?php qoolinfo('home')?>/<?php template_path()?>/css/style-ie9.css" />
 	<![endif]-->
+	<script src="<?php qoolinfo('home')?>/<?php template_path()?>/jquery.yabox.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		
+		$('.thumbnails a img').yabox({
+			fullClass: 'fullPolaroid',
+			cbs: {
+				show: $().yabox.animated.show(),
+				hide: $().yabox.animated.hide()
+			},
+			hideOnClick: true,
+			$content: $(this).attr('src')
+		});
+	});
+
+	</script>
+	
 	<?php
 }
 

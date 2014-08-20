@@ -40,6 +40,7 @@
 		<slot title="Footer Box 3" name="footer_3">text</slot>
 		<slot title="Footer Box 4" name="footer_4">text</slot>
 		<slot title="Left Sidebar Box 1" name="left_box1">menu</slot>
+		<slot title="Right box next to nivo" name="right_main_top">text</slot>
 	</slots>
 	<css>
 		<file>/css/5grid/core.css</file>

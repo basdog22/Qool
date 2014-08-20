@@ -28,7 +28,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php qoolinfo('home')?>/lib/css/theme.css">
 	<?php endif;?>
   </head>
- 
+
   <body>
 
     <div class="navbar navbar-fixed-top">
@@ -41,7 +41,7 @@
           </a>
           <a class="brand" href="<?php qoolinfo('home')?>/admin/"><?php site('backend_title')?></a>
           <div class="btn-group pull-right">
-            <a class="btn dropdown-toggle openedpop" data-toggle="dropdown" <?php showHelp('profile');?>>
+            <a class="btn dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-user"></i> <?php user('username')?>
               <span class="caret"></span>
             </a>
@@ -53,7 +53,7 @@
           </div>
           <?php if(count(get_array('addonCreationActions'))>0):?>
           <div class="btn-group pull-left">
-            <a class="btn dropdown-toggle openedpop" data-toggle="dropdown" <?php showHelp('menu_new');?> >
+            <a class="btn dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-plus"></i> <?php t("New")?>
               <span class="caret"></span>
             </a>
@@ -66,7 +66,7 @@
           <?php endif;?>
           <?php $menus = get_array('adminmenus')?>
 		   <div class="btn-group pull-left">
-            <a class="btn dropdown-toggle openedpop" data-toggle="dropdown" <?php showHelp('menu_content');?> >
+            <a class="btn dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-file"></i> <?php t('Content')?>
               <span class="caret"></span>
             </a>
@@ -78,7 +78,7 @@
             </ul>
           </div>
 		  <div class="btn-group pull-left">
-            <a class="btn dropdown-toggle openedpop" data-toggle="dropdown" <?php showHelp('menu_system');?> >
+            <a class="btn dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-wrench"></i> <?php t('System')?>
               <span class="caret"></span>
             </a>
@@ -91,7 +91,7 @@
           </div>
           <?php if(isActive('moduleMenu')):?>
           <div class="btn-group pull-left">
-            <a class="btn btn-primary dropdown-toggle openedpop" data-toggle="dropdown" <?php showHelp('menu_module');?> >
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"  >
               <i class="icon-cog icon-white"></i> <?php t('Options')?>
               <span class="caret"></span>
             </a>
@@ -109,7 +109,7 @@
           <a id="toggler" class="btn btn-primary" href="#"><?php t("HTML")?></a>
           <?php endif;?>
           
-		  <form action="<?php qoolinfo('home')?>/admin/search" class="navbar-search pull-right openedpop" <?php showHelp('search');?>>
+		  <form action="<?php qoolinfo('home')?>/admin/search" class="navbar-search pull-right">
 			<input name="q" type="text" class="search-query span2" placeholder="<?php t('Search')?>">
 		  </form>
         </div>
@@ -120,8 +120,8 @@
       <div class="row-fluid">
         <div class="span2">
           <div class="well sidebar-nav">
-			<ul class="nav nav-list" >
-			<li class="nav-header closedpop"  <?php showHelp('side_content');?>><?php t('Content')?></li>
+			<ul class="nav nav-list">
+			<li class="nav-header"><?php t('Content')?></li>
 			<?php foreach (get_array('contentAvailable') as $k=>$v):?>
 			<li class="dropdown">
 				<a class="dropdown-toggle"data-toggle="dropdown" href="#">
@@ -135,7 +135,7 @@
 			</li>
 			<?php endforeach;?>  
 			<li class="divider"></li>
-			 <li class="nav-header closedpop"  <?php showHelp('side_addons');?>><?php t('Addon Options')?></li>
+			 <li class="nav-header"><?php t('Addon Options')?></li>
 			 <?php foreach(get_array('addonMenuActions') as $k=>$v):?>
 			 <?php 
 			 $i = explode("/",$k);
@@ -156,8 +156,8 @@
 			</ul>
 		</div>
 		<?php if(isActive('objectfiles')):?>
-		 <div class="well sidebar-nav " >
-		 	<ul class="nav nav-list closedpop" <?php showHelp('object_files');?>>
+		 <div class="well sidebar-nav">
+		 	<ul class="nav nav-list">
 			<li class="nav-header"><?php t('Object Files')?></li>
 			<?php foreach (get_array('objectfiles') as $k=>$v):?>
 			<li class="dropdown">
@@ -248,12 +248,7 @@
 	              <?php endforeach; ?>
 	            </ul>
 	          </div>
-	          
-	          <p class="pull-right navbar-text">&copy; <?php site('backend_title')?> <?php echo  date("Y")?></p>
-	          <?php if(site('help',0)=='on'):?>
-	          <a id="showhelp" class="pull-right btn btn-info btn-mini" href="#" onclick="return false;"><i class="icon-question-sign icon-white"></i></a>
-	          <?php endif;?>
-        	
+        	<p class="pull-right navbar-text">&copy; <?php site('backend_title')?> 2012</p>
         </div>
       </div>
      </div>

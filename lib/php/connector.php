@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 error_reporting(0); // Set E_ALL for debuging
 
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
@@ -9,9 +9,10 @@ include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSyste
 // Required for MySQL storage connector
 // include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php';
 // Required for FTP connector support
-//include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php';
+//include_once dirname(__FILE__).'/elFinderVolumeDropbox.class.php';
 
-
+//define('ELFINDER_DROPBOX_CONSUMERKEY', $_SESSION['ELFINDER_DROPBOX_CONSUMERKEY']);
+//define('ELFINDER_DROPBOX_CONSUMERSECRET', $_SESSION['ELFINDER_DROPBOX_CONSUMERSECRET']);
 /**
  * Simple function to demonstrate how to control file access using "accessControl" callback.
  * This method will disable accessing files/folders starting from  '.' (dot)
@@ -25,28 +26,22 @@ function access($attr, $path, $data, $volume) {
 		? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
 		:  null;                                    // else elFinder decide it itself
 }
-
+$folder = ($_SESSION['QOOL_FOLDER'])?$_SESSION['QOOL_FOLDER']:'/';
 $opts = array(
-	// 'debug' => true,
+//	 'debug' => true,
 	'roots' => array(
 		array(
 			'driver'        => 'LocalFileSystem',   // driver for accessing file system (REQUIRED)
-			'path'          => '../../uploads/',         // path to files (REQUIRED)
+			'path'          => "../../uploads/",         // path to files (REQUIRED)
 			'URL'           => $_SESSION['SITE_URL'].'/uploads/', // URL to files (REQUIRED)
 			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
 			'alias'			=>	'Home',
 			'uploadAllow' 	=> array('image', 'application/x-shockwave-flash'), # allow png and flash
 			'uploadDeny' => array('text') 
 		)
-		/*, array(
-            'driver' => 'FTP',
-            'host'   => 'ftp.qool.gr',
-            'user'   => 'qoolcms',
-            'pass'   => 'T.EFel5_oRSK',
-            'path'   => 'public_html/uploads'
-        )*/
 	)
 );
+
 
 // run elFinder
 $el = new elFinder($opts);

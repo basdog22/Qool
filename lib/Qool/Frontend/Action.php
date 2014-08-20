@@ -212,13 +212,19 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 		$this->tpl->assign('addonMenuActions',$actions);
 	}
 
+	/**
+	 * Loads and assigns admin menus to the template object
+	 *
+	 */
 	function loadAdminMenus(){
 		$menus['content'] = array(
 		'contentlist'	=>	'Content Types List',
 		'datafields'	=>	'Data Fields',
 		'taxonomies'	=>	'Taxonomies',
 		'menus'			=>	'Menus',
-		'filemanager'	=>	'File Manager'
+		'gallery'		=>	'Image Gallery',
+		'filemanager'	=>	'File Manager',
+		'calendar'		=>	'Calendar'
 		);
 
 		$menus['system'] = array(
@@ -227,13 +233,14 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 		'host'			=>	'Host Settings',
 		'db'			=>	'Database Settings',
 		'site'			=>	'Site Settings',
+		'social'		=>	'Social Settings',
 		'cache'			=>	'Cache Settings',
 		'theme'			=>	'Layout Settings',
 		'thirdparty'	=>	'Third Party Tools',
 		'users'			=>	'Users Administration'
 		);
 
-		$menus = $this->doQoolHook('front_post_admin_menus_creation',$menus);
+		$menus = $this->doQoolHook('post_admin_menus_creation',$menus);
 		$this->toTpl('adminmenus',$menus);
 	}
 
@@ -805,6 +812,7 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 	}
 
 	function getNormalWidgetContents($id){
+
 		$widgets = $this->widgets;
 		$dirs = $this->dirs;
 		$data = $this->_request->getParams();
@@ -1424,29 +1432,32 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 		//echo $this->tpl->templates;
 		$addons = readLangFile(APPL_PATH.'config'.DIR_SEP."addons.xml");
 		$xml = readLangFile($this->tplPath.DIR_SEP."template.xml");
+
 		$slots = $xml->slots;
 		foreach ($slots->slot as $k=>$v){
 			foreach ($addons->widgets->addon as $ki=>$vi){
+
 				$vi = $this->jsonArray($vi);
 				$te = $this->jsonArray($v);
-				if($vi['@attributes']['name']==$te[0]){
+
+				if($vi['@attributes']['name']==$v){
 
 					$level = $vi['@attributes']['level'];
 				}
 			}
 			if($_SESSION['user']['level'] && $_SESSION['user']['level']<=$level){
 				$vo = $this->jsonArray($v);
-				if($vo[0]=='text'){
+				if($v=='text'){
 					$widget = $this->getTextWidgetContents($vo['@attributes']['name']);
 					$widget = $this->doQoolHook('front_pre_textwidget_build',$widget);
 
-				}elseif($vo[0]=='menu'){
+				}elseif($v=='menu'){
 					$widget = $this->getTextWidgetContents($vo['@attributes']['name']);
 					$widget['type'] = 'menu';
 					$name = $this->getMenu($widget['menu']);
 					$widget['name'] = $name['title'];
 					$widget = $this->doQoolHook('front_pre_menuwidget_build',$widget);
-				}elseif($vo[0]=='feed'){
+				}elseif($v=='feed'){
 					$widget = $this->getTextWidgetContents($vo['@attributes']['name']);
 					$feed = $this->consumeFeed($widget['feed']);
 					$widget['contents'] = $feed['content'];
@@ -1515,6 +1526,7 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 		$modules = $this->modules;
 		$modsettings = array();
 		$addons = readLangFile(APPL_PATH.'config'.DIR_SEP."addons.xml");
+
 
 
 		foreach ($modules as $k=>$v){
@@ -1773,6 +1785,12 @@ class Qool_Frontend_Action extends Zend_Controller_Action{
 		return $element;
 	}
 
+	public function serverSendMessage($message){
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+		echo "data: {$message}\n\n";
+		flush();
+	}
 
 }
 ?>

@@ -2,6 +2,21 @@
 <database>
 	<tables>
 		<table>
+			<name>audit_archive</name>
+			<fields>
+				<day_archive type="date" length="" collation="" null="" default="" index="index" ai="" />
+				<events_data type="longtext" length="" collation="utf8_unicode_ci" null="" default="" index="" ai="" />
+			</fields>
+		</table>
+		<table>
+			<name>audit_current</name>
+			<fields>
+				<event_creation type="timestamp" length="" collation="" null="" default="CURRENT_TIMESTAMP" index="index" ai="" />
+				<event_data type="longtext" length="" collation="utf8_unicode_ci" null="" default="" index="" ai="" />
+				<user_id type="int" length="11" collation="" null="" index="index" ai=""/>
+			</fields>
+		</table>
+		<table>
 			<name>content_types</name>
 			<fields>
 				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
@@ -9,6 +24,7 @@
 				<mime type="varchar" length="20" collation="utf8_unicode_ci" null="" index="" ai=""/>
 				<lib type="varchar" length="50" collation="utf8_unicode_ci" null="" index="" ai=""/>
 				<headers type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<ping type="text" length="" collation="utf8_unicode_ci" null="" index="" ai=""/>
 			</fields>
 		</table>
 		<table>
@@ -88,7 +104,7 @@
 			<name>taxonomies</name>
 			<fields>
 				<id type="int" length="11" collation="" null="" index="primary" ai="true"/>
-				<title type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<title type="varchar" length="255" collation="utf8_unicode_ci" null="" index="index" ai=""/>
 				<taxonomy_type type="varchar" length="150" collation="utf8_unicode_ci" null="" index="index" ai=""/>
 				<parent type="int" length="11" collation="" null="" index="index" ai=""/>
 			</fields>
@@ -107,6 +123,7 @@
 				<username type="varchar" length="50" collation="utf8_unicode_ci" null="" index="index" ai=""/>
 				<password type="varchar" length="32" collation="utf8_unicode_ci" null="" index="index" ai=""/>
 				<email type="varchar" length="255" collation="utf8_unicode_ci" null="" index="" ai=""/>
+				<created type="timestamp" length="" collation="" null="" default="CURRENT_TIMESTAMP" index="" ai=""/>
 			</fields>
 		</table>
 		<table>

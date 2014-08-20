@@ -46,7 +46,7 @@ class IndexController extends Qool_Frontend_Action
 		header('Content-Type: text/css');
 		ob_start("ob_gzhandler");
 		echo $html;
-		die();
+		exit;
 	}
 
 	public function readAction(){
@@ -65,6 +65,13 @@ class IndexController extends Qool_Frontend_Action
 		//d($content);
 		$this->toTpl('single',$content);
 
+	}
+	
+	public function getupdatesAction(){
+		$config = $this->config;
+		$info = $config->qool->toArray();
+		$messages = "Codename: {$info['codename']}<br/>Version: {$info['version']}";
+		$this->serverSendMessage($messages);
 	}
 
 	public function searchAction(){
@@ -129,13 +136,15 @@ class IndexController extends Qool_Frontend_Action
 		header('Content-Type: text/javascript');
 		ob_start("ob_gzhandler");
 		$xml = readLangFile(APPL_PATH.$dirs['structure']['templates'].DIR_SEP.'frontend'.DIR_SEP.$config->template->frontend->title.DIR_SEP."template.xml");
-		foreach ($xml->js->file as $k=>$v){
+
+		foreach ($xml->js as $k=>$v){
 			$v = $this->jsonArray($v);
-			$file = file(APPL_PATH.$dirs['structure']['templates'].DIR_SEP.'frontend'.DIR_SEP.$config->template->frontend->title.DIR_SEP.$v[0]);
+			
+			$file = file(APPL_PATH.$dirs['structure']['templates'].DIR_SEP.'frontend'.DIR_SEP.$config->template->frontend->title.DIR_SEP.$v['file']);
 			$html .= implode('',$file);
 		}
 		echo $html;
-		die();
+		exit;
 	}
 
 	public function feedAction(){

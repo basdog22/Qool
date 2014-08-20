@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<host>
-		<http/>
+		<http>http://</http>
 		<subdomain/>
-		<domain/>
-		<folder/>
+		<domain>localhost</domain>
+		<folder>/Qoolv2</folder>
 		<separator>/</separator>
-		<absolute_path/>
+		<absolute_path>C:/xampp/htdocs/Qoolv2/</absolute_path>
 	</host>
 	<database>
-		<type/>
-		<host/>
-		<username/>
+		<type>mysql</type>
+		<host>localhost</host>
+		<username>root</username>
 		<password/>
-		<db/>
-		<prefix/>
+		<db>qool_cms</db>
+		<prefix>qool_</prefix>
 	</database>
 	<site>
 		<backend_title>Qool v2.0</backend_title>
-		<frontend_title>Modules.gr</frontend_title>
+		<frontend_title>My new site is powered by Qool CMS v2.0</frontend_title>
 		<description>Qool CMS is the next generation of content management</description>
 		<slogan>and i am proud!</slogan>
 		<feed_copyright>This feed is powered by Qool CMS</feed_copyright>
@@ -32,6 +32,15 @@
 		<help>on</help>
 		<default>default</default>
 	</site>
+	<social>
+		<twitterusername>ThyClub</twitterusername>
+		<fbusername>basdog22</fbusername>
+		<dropboxchooser>np81jh9ahn7t50f</dropboxchooser>
+		<dropboxkey>pu818lrf0dykjih</dropboxkey>
+		<dropboxsecret>um4wo5bbdqm92ip</dropboxsecret>
+		<dropboxtoken/>
+		<hasdropbox>off</hasdropbox>
+	<googleusername>basdog22</googleusername></social>
 	<cache>
 		<rules>
 			<overallcache time="300"/>
@@ -64,7 +73,7 @@
 			</available>
 		</frontend>
 		<backend>
-			<title>default</title>
+			<title>charisma</title>
 			<engine>php</engine>
 		</backend>
 		<mobile>
@@ -82,13 +91,22 @@
 			</available>
 		</frontend>
 		<backend>
-			<language>english</language>
-			<shortname>en</shortname>
+			<language>greek</language>
+			<shortname>el</shortname>
 			<available>
 				<language>english</language>
 				<language>greek</language>
 			</available>
 		</backend>
+		<content>
+			<language>english</language>
+			<shortname>en</shortname>
+			<locale>en_US</locale>
+			<available>
+				
+				<language shortname="el" locale="el_GR" name="greek"/>
+			<language shortname="en" locale="en_US" name="english"/><language shortname="it" locale="it_IT" name="italian"/></available>
+		</content>
 	</languages>
 	<thirdparty>
 		<template_engines>

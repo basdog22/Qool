@@ -8,8 +8,8 @@
 	</modules>
 	<widgets>
 		<addon/>
-		<addon parent="none" name="text" state="installed" level="8000" adminlevel="1" cachetime="500" title="Text Widget for Qool CMS"/>
-		<addon parent="none" name="menu" state="installed" level="8000" adminlevel="1" cachetime="500" title="Menu Widget for Qool CMS"/>
-		<addon parent="none" name="feed" state="installed" level="8000" adminlevel="1" cachetime="500" title="Feed Widget for Qool CMS"/>
+		<addon parent="none" name="text" title="Text Widget" state="installed" level="8000" adminlevel="1" cachetime="500"/>
+		<addon parent="none" name="menu" state="installed" level="8000" adminlevel="1" cachetime="500" title="Menu Widget"/>
+		<addon parent="none" name="feed" state="installed" level="8000" adminlevel="1" cachetime="500" title="Feed Widget"/>
 	</widgets>
 </addons>

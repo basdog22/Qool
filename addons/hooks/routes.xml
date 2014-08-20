@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<routes>
+	<Hooks_Dashboard type="Zend_Controller_Router_Route">
+		<route>admin/hooks</route>
+		<defaults>
+			<module>hooks</module>
+			<controller>admin</controller>
+			<action>index</action>
+		</defaults>
+	</Hooks_Dashboard>
+	<Hooks_Admin type="Zend_Controller_Router_Route">
+		<route>admin/hooks/:action</route>
+		<reqs action="[^\s]+" />
+		<defaults>
+			<module>hooks</module>
+			<controller>admin</controller>
+			<action>index</action>
+		</defaults>
+	</Hooks_Admin>
+	<Hooks_Index type="Zend_Controller_Router_Route">
+		<route>hooks</route>
+		<defaults>
+			<module>hooks</module>
+			<controller>hooks</controller>
+			<action>index</action>
+		</defaults>
+	</Hooks_Index>
+	<Hooks_Read type="Zend_Controller_Router_Route">
+		<route>hooks/:slug</route>
+		<reqs slug="[a-zA-Z\-0-9]+" />
+		<defaults>
+			<module>hooks</module>
+			<controller>hooks</controller>
+			<action>read</action>
+		</defaults>
+	</Hooks_Read>
+	<Hooks_Archive type="Zend_Controller_Router_Route">
+			<route>hooks/archive/:year-:month-:date</route>
+			<reqs year="[0-9]+" month="[0-9]+" date="[0-9]+" />
+			<defaults>
+				<module>hooks</module>
+				<controller>hooks</controller>
+				<action>archive</action>
+			</defaults>
+	</Hooks_Archive>
+	<Hooks_Search type="Zend_Controller_Router_Route">
+		<route>hooks/search/:keyword</route>
+		<reqs keyword="[^\s]+" />
+		<defaults>
+			<module>hooks</module>
+			<controller>hooks</controller>
+			<action>search</action>
+			<keyword>list</keyword>
+		</defaults>
+	</Hooks_Search>
+ </routes>

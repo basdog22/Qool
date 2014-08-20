@@ -54,9 +54,14 @@
 
 		#logo h1
 		{
-			font-size: 2.25em;
-			letter-spacing: -1px;
-			color: #fff;
+			background: url("http://www.qool.gr/uploads/blue-logo.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    font-size: 2.25em;
+    height: 85px;
+    letter-spacing: -1px;
+    margin-top: 0;
+    text-indent: -9999px;
+    width: 236px;
 		}
 		
 		#logo span
@@ -121,7 +126,7 @@
 
 	#banner
 	{
-		margin: 0 0 3em 0;
+		/*margin: 0 0 3em 0;*/
 	}
 
 		#banner a
@@ -251,6 +256,7 @@
     height:auto;
     width:auto;
     overflow:visible;
+    z-index:999;
 }
 
 #site-nav{

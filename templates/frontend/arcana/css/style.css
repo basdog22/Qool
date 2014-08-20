@@ -169,7 +169,7 @@
 			{
 				border: solid 5px #fff;
 				box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
-				float: left;
+				
 				margin-right: 25px;
 			}
 			
@@ -208,4 +208,91 @@
 
 .maintext,.maintext p{
 	text-align:justify;
+}
+
+.pagination{
+	width:600px;
+	margin:0 auto;
+	text-align:center;
+}
+.pagination ul li{
+	display:inline;
+	margin-left:10px;
+	
+	
+}
+
+.pagination ul li a{
+	display:inline-block;
+	padding:5px 15px;
+	border:1px solid #eee;
+	border-radius: 30px 0 30px 0;
+}
+
+.pagination ul li.active a{
+	border:1px solid #386804;
+	background:#478903;
+	color:#fff;
+}
+
+.pagination ul li a:hover{
+	text-shadow:0 0 0 #478903;
+	border:1px solid #478903;
+}
+
+strong{
+	text-shadow:0 0 0 #444;
+}
+
+.fullPolaroid{
+	background:#fff;
+	padding:15px;
+	border-radius:5px;
+	border:5px solid #32C6F4;
+	box-shadow:0px 0px 12px -5px #000000;
+	cursor:pointer;
+	z-index:100;
+}
+
+
+
+.close {
+    border-left: 35px solid transparent;
+    border-top: 35px solid #32C6F4;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 0;
+}
+
+.closesign {
+    position: absolute;
+    top: -5px;
+	color: #fff;
+	font-weight:bold;
+}
+
+.yabox_overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    background-color: black;
+    opacity: 0.2;
+}
+
+
+.imgalt{
+    background: none repeat scroll 0 0 #32C6F4;
+    border-radius: 0 25px 0 0;
+    margin-left: -15px;
+    margin-top: -16px;
+    padding: 0 10px;
+    position: absolute;
+}
+
+section{
+	text-align:justify
 }

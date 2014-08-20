@@ -864,6 +864,7 @@ class Zend_Form_Element implements Zend_Validate_Interface
 
         return $this;
     }
+    
 
     /**
      * Set multiple attributes at once
